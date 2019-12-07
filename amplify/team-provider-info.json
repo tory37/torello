@@ -13,7 +13,8 @@
         },
         "categories": {
             "auth": {
-                "torello54b8701f": {}
+                "torello54b8701f": {},
+                "userPoolGroups": {}
             }
         }
     }
