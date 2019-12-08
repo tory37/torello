@@ -1,9 +1,10 @@
 import * as React from "react";
-import { Query } from "react-apollo";
+import { useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 
 import { listBoards } from "graphql/queries";
 import { ListBoardsQuery, ListBoardsQueryVariables } from "API";
+
 import OnMount from "components/on-mount";
 import { onCreateBoard } from "graphql/subscriptions";
 
@@ -13,6 +14,11 @@ import { Button } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const BoardSelector = () => {
+  const { loading, data, subscribeToMore } = useQuery<
+    ListBoardsQuery,
+    ListBoardsQueryVariables
+  >(gql(listBoards), { variables: { limit: 100 } });
+
   return (
     <StyledBoardSelector>
       <div className="header-row">
@@ -21,31 +27,22 @@ const BoardSelector = () => {
           New <FontAwesomeIcon icon="plus" />
         </Button>
       </div>
-      <Query<ListBoardsQuery, ListBoardsQueryVariables>
-        query={gql(listBoards)}
-        variables={{ limit: 100 }}
-      >
-        {({ data, loading, subscribeToMore }) => {
-          if (loading || !data || !data.listBoards || !data.listBoards.items) {
-            return null;
-          }
 
-          return (
-            <div className="boards">
-              <OnMount
-                onEffect={() => {
-                  return subscribeToMore(
-                    buildSubscription(gql(onCreateBoard), gql(listBoards))
-                  );
-                }}
-              />
-              {data.listBoards.items.map(board => (
-                <span>{board!.title}</span>
-              ))}
-            </div>
-          );
-        }}
-      </Query>
+      <div className="boards">
+        <OnMount
+          onEffect={() => {
+            return subscribeToMore(
+              buildSubscription(gql(onCreateBoard), gql(listBoards))
+            );
+          }}
+        />
+        {loading && <span>Loading...</span>}
+        {!loading &&
+          data &&
+          data.listBoards &&
+          data.listBoards.items &&
+          data.listBoards.items.map(board => <span>{board!.title}</span>)}
+      </div>
     </StyledBoardSelector>
   );
 };
