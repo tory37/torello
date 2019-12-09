@@ -22,6 +22,7 @@ export const createBoard = `mutation CreateBoard(
     }
     createdAt
     isArchived
+    backgroundColor
     owner
   }
 }
@@ -47,6 +48,7 @@ export const updateBoard = `mutation UpdateBoard(
     }
     createdAt
     isArchived
+    backgroundColor
     owner
   }
 }
@@ -72,6 +74,7 @@ export const deleteBoard = `mutation DeleteBoard(
     }
     createdAt
     isArchived
+    backgroundColor
     owner
   }
 }

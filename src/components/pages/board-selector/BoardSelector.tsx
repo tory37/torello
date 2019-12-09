@@ -1,17 +1,16 @@
-import * as React from "react";
+import React, { useEffect } from "react";
+import StyledBoardSelector from "./BoardSelector.style";
 import { useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 
 import { listBoards } from "graphql/queries";
 import { ListBoardsQuery, ListBoardsQueryVariables } from "API";
 
-import OnMount from "components/on-mount";
 import { onCreateBoard } from "graphql/subscriptions";
 
-import StyledBoardSelector from "./BoardSelector.style";
 import { buildSubscription } from "aws-appsync";
-import { Button } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import BoardPreview from "./board-preview";
 
 const BoardSelector = () => {
   const { loading, data, subscribeToMore } = useQuery<
@@ -23,25 +22,27 @@ const BoardSelector = () => {
     <StyledBoardSelector>
       <div className="header-row">
         <div className="title">Boards</div>
-        <Button>
+        <button>
           New <FontAwesomeIcon icon="plus" />
-        </Button>
+        </button>
       </div>
 
       <div className="boards">
-        <OnMount
-          onEffect={() => {
-            return subscribeToMore(
-              buildSubscription(gql(onCreateBoard), gql(listBoards))
-            );
-          }}
-        />
         {loading && <span>Loading...</span>}
         {!loading &&
           data &&
           data.listBoards &&
           data.listBoards.items &&
-          data.listBoards.items.map(board => <span>{board!.title}</span>)}
+          data.listBoards.items.map(board => {
+            return (
+              board && (
+                <BoardPreview
+                  title={board.title}
+                  backgroundColor={board.backgroundColor}
+                />
+              )
+            );
+          })}
       </div>
     </StyledBoardSelector>
   );

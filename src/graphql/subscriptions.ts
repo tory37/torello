@@ -19,6 +19,7 @@ export const onCreateBoard = `subscription OnCreateBoard($owner: String!) {
     }
     createdAt
     isArchived
+    backgroundColor
     owner
   }
 }
@@ -41,6 +42,7 @@ export const onUpdateBoard = `subscription OnUpdateBoard($owner: String!) {
     }
     createdAt
     isArchived
+    backgroundColor
     owner
   }
 }
@@ -63,6 +65,7 @@ export const onDeleteBoard = `subscription OnDeleteBoard($owner: String!) {
     }
     createdAt
     isArchived
+    backgroundColor
     owner
   }
 }

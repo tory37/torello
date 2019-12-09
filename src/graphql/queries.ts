@@ -19,6 +19,7 @@ export const getBoard = `query GetBoard($id: ID!) {
     }
     createdAt
     isArchived
+    backgroundColor
     owner
   }
 }
@@ -37,6 +38,7 @@ export const listBoards = `query ListBoards(
       }
       createdAt
       isArchived
+      backgroundColor
       owner
     }
     nextToken

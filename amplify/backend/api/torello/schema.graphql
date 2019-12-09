@@ -6,6 +6,7 @@ type Board
   columns: [Column] @connection(keyName: "byBoard", fields: ["id"])
   createdAt: AWSTimestamp
   isArchived: Boolean
+  backgroundColor: String!
 }
 
 type Column

@@ -6,12 +6,14 @@ export type CreateBoardInput = {
   title: string,
   createdAt?: number | null,
   isArchived?: boolean | null,
+  backgroundColor: string,
 };
 
 export type ModelBoardConditionInput = {
   title?: ModelStringInput | null,
   createdAt?: ModelIntInput | null,
   isArchived?: ModelBooleanInput | null,
+  backgroundColor?: ModelStringInput | null,
   and?: Array< ModelBoardConditionInput | null > | null,
   or?: Array< ModelBoardConditionInput | null > | null,
   not?: ModelBoardConditionInput | null,
@@ -81,6 +83,7 @@ export type UpdateBoardInput = {
   title?: string | null,
   createdAt?: number | null,
   isArchived?: boolean | null,
+  backgroundColor?: string | null,
 };
 
 export type DeleteBoardInput = {
@@ -177,6 +180,7 @@ export type ModelBoardFilterInput = {
   title?: ModelStringInput | null,
   createdAt?: ModelIntInput | null,
   isArchived?: ModelBooleanInput | null,
+  backgroundColor?: ModelStringInput | null,
   and?: Array< ModelBoardFilterInput | null > | null,
   or?: Array< ModelBoardFilterInput | null > | null,
   not?: ModelBoardFilterInput | null,
@@ -233,6 +237,7 @@ export type CreateBoardMutation = {
     } | null,
     createdAt: number | null,
     isArchived: boolean | null,
+    backgroundColor: string,
     owner: string | null,
   } | null,
 };
@@ -263,6 +268,7 @@ export type UpdateBoardMutation = {
     } | null,
     createdAt: number | null,
     isArchived: boolean | null,
+    backgroundColor: string,
     owner: string | null,
   } | null,
 };
@@ -293,6 +299,7 @@ export type DeleteBoardMutation = {
     } | null,
     createdAt: number | null,
     isArchived: boolean | null,
+    backgroundColor: string,
     owner: string | null,
   } | null,
 };
@@ -478,6 +485,7 @@ export type GetBoardQuery = {
     } | null,
     createdAt: number | null,
     isArchived: boolean | null,
+    backgroundColor: string,
     owner: string | null,
   } | null,
 };
@@ -501,6 +509,7 @@ export type ListBoardsQuery = {
       } | null,
       createdAt: number | null,
       isArchived: boolean | null,
+      backgroundColor: string,
       owner: string | null,
     } | null > | null,
     nextToken: string | null,
@@ -633,6 +642,7 @@ export type OnCreateBoardSubscription = {
     } | null,
     createdAt: number | null,
     isArchived: boolean | null,
+    backgroundColor: string,
     owner: string | null,
   } | null,
 };
@@ -662,6 +672,7 @@ export type OnUpdateBoardSubscription = {
     } | null,
     createdAt: number | null,
     isArchived: boolean | null,
+    backgroundColor: string,
     owner: string | null,
   } | null,
 };
@@ -691,6 +702,7 @@ export type OnDeleteBoardSubscription = {
     } | null,
     createdAt: number | null,
     isArchived: boolean | null,
+    backgroundColor: string,
     owner: string | null,
   } | null,
 };
