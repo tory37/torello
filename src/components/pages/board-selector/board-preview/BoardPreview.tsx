@@ -1,7 +1,13 @@
 import React from "react";
-import StyledBoardPreview from "./BoardPreview.style";
-import Card from "@material-ui/core/Card";
+import {
+  Card,
+  CardActionArea,
+  Typography,
+  CardMedia,
+  CardContent
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { Link } from "react-router-dom";
 
 type BoardPreviewProps = {
   title: string;
@@ -11,8 +17,11 @@ type BoardPreviewProps = {
 const getStyles = (color: string) => {
   return makeStyles({
     card: {
-      width: "300px",
-      backgroundColor: color
+      width: "250px"
+    },
+    previewImage: {
+      backgroundColor: color,
+      height: "50px"
     }
   });
 };
@@ -22,7 +31,17 @@ const BoardPreview = ({ title, backgroundColor }: BoardPreviewProps) => {
 
   return (
     <Card className={classes.card}>
-      <span>{title}</span>
+      <CardActionArea component={Link} to="/boards">
+        <CardMedia className={classes.previewImage}></CardMedia>
+        <CardContent>
+          <Typography gutterBottom variant="h6" component="h2">
+            {title}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" component="p">
+            Columns: 4, Cards: 20
+          </Typography>
+        </CardContent>
+      </CardActionArea>
     </Card>
   );
 };
