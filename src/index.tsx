@@ -11,6 +11,8 @@ import { ApolloLink } from "apollo-link";
 import { createHttpLink } from "apollo-link-http";
 import { ApolloClient } from "apollo-client";
 import { InMemoryCache } from "apollo-cache-inmemory";
+import StateResolvers from './resolvers';
+import typeDefs from './typeDefs';
 
 import appSyncConfig from "aws-exports";
 import Amplify, { Auth } from "aws-amplify";
@@ -33,9 +35,28 @@ const link = ApolloLink.from([
   createSubscriptionHandshakeLink(url, httpLink)
 ]);
 
+const cache = new InMemoryCache();
+
+const getState = (query: any): IState => {
+  return cache.readQuery<IRoot>({query}).state;
+}
+
+const writeState = (state: IState) => {
+  return cache.writeData({data: {state}};)
+}
+
+const initState = () => {
+  const state = {
+    appState: defaultAppState,
+    __typename: 'State'
+  }
+}
+
 const client = new ApolloClient({
   link,
-  cache: new InMemoryCache()
+  cache,
+  typeDefs,
+  resolvers: StateResolvers(getState, writeState)
 });
 
 // const client = new AWSAppSyncClient({
@@ -48,6 +69,10 @@ const client = new ApolloClient({
 //       (await Auth.currentSession()).getIdToken().getJwtToken()
 //   }
 // });
+
+cache.writeData({
+  data: defaultState
+})
 
 ReactDOM.render(
   <ApolloProvider client={client}>

@@ -11,6 +11,19 @@ export const getBoard = `query GetBoard($id: ID!) {
         boardID
         title
         position
+        tasks {
+          items {
+            id
+            columnID
+            title
+            description
+            order
+            createdAt
+            isArchived
+            owner
+          }
+          nextToken
+        }
         createdAt
         isArchived
         owner
@@ -34,6 +47,18 @@ export const listBoards = `query ListBoards(
       id
       title
       columns {
+        items {
+          id
+          boardID
+          title
+          position
+          tasks {
+            nextToken
+          }
+          createdAt
+          isArchived
+          owner
+        }
         nextToken
       }
       createdAt
@@ -82,6 +107,16 @@ export const listColumns = `query ListColumns(
       title
       position
       tasks {
+        items {
+          id
+          columnID
+          title
+          description
+          order
+          createdAt
+          isArchived
+          owner
+        }
         nextToken
       }
       createdAt

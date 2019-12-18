@@ -14,6 +14,19 @@ export const createBoard = `mutation CreateBoard(
         boardID
         title
         position
+        tasks {
+          items {
+            id
+            columnID
+            title
+            description
+            order
+            createdAt
+            isArchived
+            owner
+          }
+          nextToken
+        }
         createdAt
         isArchived
         owner
@@ -40,6 +53,19 @@ export const updateBoard = `mutation UpdateBoard(
         boardID
         title
         position
+        tasks {
+          items {
+            id
+            columnID
+            title
+            description
+            order
+            createdAt
+            isArchived
+            owner
+          }
+          nextToken
+        }
         createdAt
         isArchived
         owner
@@ -66,6 +92,19 @@ export const deleteBoard = `mutation DeleteBoard(
         boardID
         title
         position
+        tasks {
+          items {
+            id
+            columnID
+            title
+            description
+            order
+            createdAt
+            isArchived
+            owner
+          }
+          nextToken
+        }
         createdAt
         isArchived
         owner

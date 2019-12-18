@@ -11,6 +11,19 @@ export const onCreateBoard = `subscription OnCreateBoard($owner: String!) {
         boardID
         title
         position
+        tasks {
+          items {
+            id
+            columnID
+            title
+            description
+            order
+            createdAt
+            isArchived
+            owner
+          }
+          nextToken
+        }
         createdAt
         isArchived
         owner
@@ -34,6 +47,19 @@ export const onUpdateBoard = `subscription OnUpdateBoard($owner: String!) {
         boardID
         title
         position
+        tasks {
+          items {
+            id
+            columnID
+            title
+            description
+            order
+            createdAt
+            isArchived
+            owner
+          }
+          nextToken
+        }
         createdAt
         isArchived
         owner
@@ -57,6 +83,19 @@ export const onDeleteBoard = `subscription OnDeleteBoard($owner: String!) {
         boardID
         title
         position
+        tasks {
+          items {
+            id
+            columnID
+            title
+            description
+            order
+            createdAt
+            isArchived
+            owner
+          }
+          nextToken
+        }
         createdAt
         isArchived
         owner

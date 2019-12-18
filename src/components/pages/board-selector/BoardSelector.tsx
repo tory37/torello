@@ -3,7 +3,7 @@ import StyledBoardSelector from "./BoardSelector.style";
 import { useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 
-import { listBoards } from "graphql/queries";
+import { listBoards, getTask } from "graphql/queries";
 import { ListBoardsQuery, ListBoardsQueryVariables } from "API";
 
 import { onCreateBoard } from "graphql/subscriptions";
@@ -11,6 +11,9 @@ import { onCreateBoard } from "graphql/subscriptions";
 import { buildSubscription } from "aws-appsync";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import BoardPreview from "./board-preview";
+import BoardCreateCard from "./board-create-card";
+import Board from "types/Board";
+import { getColumnCount, getTaskCount } from "utils/Board";
 
 const BoardSelector = () => {
   const { loading, data, subscribeToMore } = useQuery<
@@ -29,20 +32,29 @@ const BoardSelector = () => {
 
       <div className="boards">
         {loading && <span>Loading...</span>}
-        {!loading &&
-          data &&
-          data.listBoards &&
-          data.listBoards.items &&
-          data.listBoards.items.map(board => {
-            return (
-              board && (
-                <BoardPreview
-                  title={board.title}
-                  backgroundColor={board.backgroundColor}
-                />
-              )
-            );
-          })}
+        {!loading && (
+          <React.Fragment>
+            {data &&
+              data.listBoards &&
+              data.listBoards.items &&
+              data.listBoards.items.map(board => {
+                return (
+                  board && (
+                    <BoardPreview
+                      title={board.title}
+                      key={board.id}
+                      backgroundColor={board.backgroundColor}
+                      columnCount={getColumnCount(board as Board)}
+                      taskCount={getTaskCount(board as Board)}
+                      isCreate={false}
+                    />
+                  )
+                );
+              })}
+
+            <BoardCreateCard />
+          </React.Fragment>
+        )}
       </div>
     </StyledBoardSelector>
   );

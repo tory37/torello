@@ -11,7 +11,10 @@ import { Link } from "react-router-dom";
 
 type BoardPreviewProps = {
   title: string;
+  columnCount: number;
+  taskCount: number;
   backgroundColor: string;
+  isCreate: boolean;
 };
 
 const getStyles = (color: string) => {
@@ -26,20 +29,32 @@ const getStyles = (color: string) => {
   });
 };
 
-const BoardPreview = ({ title, backgroundColor }: BoardPreviewProps) => {
+const BoardPreview = ({
+  title,
+  columnCount,
+  taskCount,
+  backgroundColor,
+  isCreate
+}: BoardPreviewProps) => {
   const classes = getStyles(backgroundColor)();
 
   return (
     <Card className={classes.card}>
       <CardActionArea component={Link} to="/boards">
-        <CardMedia className={classes.previewImage}></CardMedia>
+        <CardMedia>
+          <div className={classes.previewImage} />
+        </CardMedia>
         <CardContent>
-          <Typography gutterBottom variant="h6" component="h2">
-            {title}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
-            Columns: 4, Cards: 20
-          </Typography>
+          {!isCreate && (
+            <React.Fragment>
+              <Typography gutterBottom variant="h6" component="h2">
+                {title}
+              </Typography>
+              <Typography variant="body2" color="textSecondary" component="p">
+                Columns: {columnCount}, Cards: {taskCount}
+              </Typography>
+            </React.Fragment>
+          )}
         </CardContent>
       </CardActionArea>
     </Card>
