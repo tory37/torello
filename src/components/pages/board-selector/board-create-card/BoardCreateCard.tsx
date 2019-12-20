@@ -8,26 +8,25 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
-const getStyles = (color: string) => {
+const getStyles = () => {
   return makeStyles({
     card: {
       width: "250px"
     },
     previewImage: {
-      backgroundColor: color,
       height: "50px"
     }
   });
 };
 
-const BoardPreview = () => {
-  const classes = getStyles(backgroundColor)();
+const BoardCreateCard = () => {
+  const classes = getStyles()();
 
   const openCreatePopup = () => {};
 
   return (
     <Card className={classes.card}>
-      <CardActionArea onClick>
+      <CardActionArea>
         <CardMedia>
           <div className={classes.previewImage} />
         </CardMedia>
@@ -36,4 +35,4 @@ const BoardPreview = () => {
   );
 };
 
-export default BoardPreview;
+export default BoardCreateCard;

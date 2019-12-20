@@ -11,12 +11,12 @@ import { ApolloLink } from "apollo-link";
 import { createHttpLink } from "apollo-link-http";
 import { ApolloClient } from "apollo-client";
 import { InMemoryCache } from "apollo-cache-inmemory";
-import StateResolvers from './resolvers';
-import typeDefs from './typeDefs';
 
 import appSyncConfig from "aws-exports";
 import Amplify, { Auth } from "aws-amplify";
 import { ApolloProvider } from "@apollo/react-hooks";
+
+import { defaultState, typeDefs, resolvers } from "store";
 
 Amplify.configure(appSyncConfig);
 
@@ -30,49 +30,21 @@ const auth = {
 
 const httpLink = createHttpLink({ uri: url });
 
+const cache = new InMemoryCache();
+
 const link = ApolloLink.from([
   createAuthLink({ url, region, auth }),
   createSubscriptionHandshakeLink(url, httpLink)
 ]);
 
-const cache = new InMemoryCache();
-
-const getState = (query: any): IState => {
-  return cache.readQuery<IRoot>({query}).state;
-}
-
-const writeState = (state: IState) => {
-  return cache.writeData({data: {state}};)
-}
-
-const initState = () => {
-  const state = {
-    appState: defaultAppState,
-    __typename: 'State'
-  }
-}
-
 const client = new ApolloClient({
   link,
   cache,
   typeDefs,
-  resolvers: StateResolvers(getState, writeState)
+  resolvers
 });
 
-// const client = new AWSAppSyncClient({
-//   disableOffline: true,
-//   url: AppSyncConfig.aws_appsync_graphqlEndpoint,
-//   region: AppSyncConfig.aws_appsync_region,
-//   auth: {
-//     type: AUTH_TYPE.AMAZON_COGNITO_USER_POOLS,
-//     jwtToken: async () =>
-//       (await Auth.currentSession()).getIdToken().getJwtToken()
-//   }
-// });
-
-cache.writeData({
-  data: defaultState
-})
+cache.writeData(defaultState);
 
 ReactDOM.render(
   <ApolloProvider client={client}>
