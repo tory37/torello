@@ -9,10 +9,10 @@ import "typeface-roboto";
 
 //#region Fontawesome Setup
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import NavBar from "components/nav-bar/NavBar";
 
-library.add(faPlus);
+library.add(faPlus, faPlusCircle);
 //#endregion
 
 const App = () => {

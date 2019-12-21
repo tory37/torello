@@ -20,7 +20,8 @@ type BoardPreviewProps = {
 const getStyles = (color: string) => {
   return makeStyles({
     card: {
-      width: "250px"
+      width: "250px",
+      height: "150px"
     },
     previewImage: {
       backgroundColor: color,

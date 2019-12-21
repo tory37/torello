@@ -11,3 +11,7 @@ export const typeDefs = [CreateModal.typeDefs];
 export const resolvers = {
   Mutation: merge({}, CreateModal.resolvers.mutations)
 };
+
+export const storeHooks = {
+  createModal: CreateModal.hooks
+};

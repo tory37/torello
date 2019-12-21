@@ -14,7 +14,6 @@ import BoardPreview from "./board-preview";
 import BoardCreateCard from "./board-create-card";
 import Board from "types/Board";
 import { getColumnCount, getTaskCount } from "utils/Board";
-import { hooks } from "store/createModal";
 import { Container, Grid } from "@material-ui/core";
 
 const BoardSelector = () => {
@@ -23,19 +22,11 @@ const BoardSelector = () => {
     ListBoardsQueryVariables
   >(gql(listBoards), { variables: { limit: 100 } });
 
-  const { isOpen: isCreateModalOpen } = hooks.useIsOpen();
-  const openCloseModal = hooks.useOpenModal();
-
-  const onAddClick = (options: any) => openCloseModal();
-
   return (
     <Container>
       <StyledBoardSelector>
         <div className="header-row">
           <div className="title">Boards</div>
-          <button onClick={onAddClick}>
-            New <FontAwesomeIcon icon="plus" />
-          </button>
         </div>
 
         <div className="boards">
@@ -54,10 +45,9 @@ const BoardSelector = () => {
                 boards.listBoards.items.map(board => {
                   return (
                     board && (
-                      <Grid item>
+                      <Grid item key={board.id}>
                         <BoardPreview
                           title={board.title}
-                          key={board.id}
                           backgroundColor={board.backgroundColor}
                           columnCount={getColumnCount(board as Board)}
                           taskCount={getTaskCount(board as Board)}
@@ -67,8 +57,9 @@ const BoardSelector = () => {
                     )
                   );
                 })}
-
-              <BoardCreateCard />
+              <Grid item>
+                <BoardCreateCard />
+              </Grid>
             </Grid>
           )}
         </div>

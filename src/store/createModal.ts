@@ -24,7 +24,7 @@ const queries = {
   `
 };
 
-export const mutations = {
+const mutations = {
   CREATE_MODAL_OPEN: gql`
     mutation {
       createModalSet(val: true) @client
