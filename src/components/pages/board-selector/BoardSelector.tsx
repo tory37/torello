@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 import StyledBoardSelector from "./BoardSelector.style";
-import { useQuery, useApolloClient, useMutation } from "@apollo/react-hooks";
+import { useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 
-import { listBoards, getTask } from "graphql/queries";
+import { listBoards } from "graphql/queries";
 import { ListBoardsQuery, ListBoardsQueryVariables } from "API";
 
 import { onCreateBoard } from "graphql/subscriptions";
@@ -15,6 +15,7 @@ import BoardCreateCard from "./board-create-card";
 import Board from "types/Board";
 import { getColumnCount, getTaskCount } from "utils/Board";
 import { hooks } from "store/createModal";
+import { Container, Grid } from "@material-ui/core";
 
 const BoardSelector = () => {
   const { loading, data: boards } = useQuery<
@@ -28,42 +29,51 @@ const BoardSelector = () => {
   const onAddClick = (options: any) => openCloseModal();
 
   return (
-    <StyledBoardSelector>
-      <div className="header-row">
-        <div className="title">Boards</div>
-        <button onClick={onAddClick}>
-          New <FontAwesomeIcon icon="plus" />
-        </button>
-      </div>
+    <Container>
+      <StyledBoardSelector>
+        <div className="header-row">
+          <div className="title">Boards</div>
+          <button onClick={onAddClick}>
+            New <FontAwesomeIcon icon="plus" />
+          </button>
+        </div>
 
-      <div className="boards">
-        {loading && <span>Loading...</span>}
-        {!loading && (
-          <React.Fragment>
-            {boards &&
-              boards.listBoards &&
-              boards.listBoards.items &&
-              boards.listBoards.items.map(board => {
-                return (
-                  board && (
-                    <BoardPreview
-                      title={board.title}
-                      key={board.id}
-                      backgroundColor={board.backgroundColor}
-                      columnCount={getColumnCount(board as Board)}
-                      taskCount={getTaskCount(board as Board)}
-                      isCreate={false}
-                    />
-                  )
-                );
-              })}
+        <div className="boards">
+          {loading && <span>Loading...</span>}
+          {!loading && (
+            <Grid
+              container
+              direction="row"
+              justify="flex-start"
+              alignItems="center"
+              spacing={4}
+            >
+              {boards &&
+                boards.listBoards &&
+                boards.listBoards.items &&
+                boards.listBoards.items.map(board => {
+                  return (
+                    board && (
+                      <Grid item>
+                        <BoardPreview
+                          title={board.title}
+                          key={board.id}
+                          backgroundColor={board.backgroundColor}
+                          columnCount={getColumnCount(board as Board)}
+                          taskCount={getTaskCount(board as Board)}
+                          isCreate={false}
+                        />
+                      </Grid>
+                    )
+                  );
+                })}
 
-            <BoardCreateCard />
-            <span>{isCreateModalOpen ? "OPEN" : "CLOSED"}</span>
-          </React.Fragment>
-        )}
-      </div>
-    </StyledBoardSelector>
+              <BoardCreateCard />
+            </Grid>
+          )}
+        </div>
+      </StyledBoardSelector>
+    </Container>
   );
 };
 
