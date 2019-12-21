@@ -14,8 +14,7 @@ import BoardPreview from "./board-preview";
 import BoardCreateCard from "./board-create-card";
 import Board from "types/Board";
 import { getColumnCount, getTaskCount } from "utils/Board";
-import { useGetIsCreateModalOpen } from "store/queries";
-import { SET_CREATE_MODAL_OPEN } from "store/mutations";
+import { hooks } from "store/createModal";
 
 const BoardSelector = () => {
   const { loading, data: boards } = useQuery<
@@ -23,9 +22,10 @@ const BoardSelector = () => {
     ListBoardsQueryVariables
   >(gql(listBoards), { variables: { limit: 100 } });
 
-  const { isCreateModalOpen } = useGetIsCreateModalOpen();
-  const [setCreateModalOpen] = useMutation(SET_CREATE_MODAL_OPEN);
-  const onAddClick = (options: any) => setCreateModalOpen();
+  const { isOpen: isCreateModalOpen } = hooks.useIsOpen();
+  const openCloseModal = hooks.useOpenModal();
+
+  const onAddClick = (options: any) => openCloseModal();
 
   return (
     <StyledBoardSelector>

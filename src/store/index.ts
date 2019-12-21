@@ -1,25 +1,13 @@
-import gql from "graphql-tag";
+import { merge } from "lodash";
+
+import * as CreateModal from "./createModal";
 
 export const defaultState = {
-  data: {
-    isCreateModalOpen: false
-  }
+  ...CreateModal.state
 };
 
-export const typeDefs = gql`
-  extend type Query {
-    isCreateModalOpen: Boolean!
-  }
-`;
+export const typeDefs = [CreateModal.typeDefs];
 
 export const resolvers = {
-  Mutation: {
-    setCreateModal: (_: any, { id }: any, { cache }: any) => {
-      console.log("in mutation");
-      cache.writeData({
-        data: { isCreateModalOpen: true }
-      });
-      return null;
-    }
-  }
+  Mutation: merge({}, CreateModal.resolvers.mutations)
 };

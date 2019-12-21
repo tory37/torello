@@ -44,7 +44,7 @@ const client = new ApolloClient({
   resolvers
 });
 
-cache.writeData(defaultState);
+cache.writeData({ data: defaultState });
 
 ReactDOM.render(
   <ApolloProvider client={client}>
