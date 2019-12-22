@@ -1,17 +1,22 @@
-import { merge } from "lodash";
+import { useState } from "react";
+import { createContainer } from "unstated-next";
 
-import * as CreateModal from "./createModal";
+export const useStore = () => {
+  const [isOpen, setIsOpen] = useState(false);
 
-export const defaultState = {
-  ...CreateModal.state
+  const open = () => {
+    setIsOpen(true);
+  };
+
+  const close = () => {
+    setIsOpen(false);
+  };
+
+  return {
+    isOpen,
+    open,
+    close
+  };
 };
 
-export const typeDefs = [CreateModal.typeDefs];
-
-export const resolvers = {
-  Mutation: merge({}, CreateModal.resolvers.mutations)
-};
-
-export const storeHooks = {
-  createModal: CreateModal.hooks
-};
+export const StoreContainer = createContainer(useStore);

@@ -16,7 +16,7 @@ import appSyncConfig from "aws-exports";
 import Amplify, { Auth } from "aws-amplify";
 import { ApolloProvider } from "@apollo/react-hooks";
 
-import { defaultState, typeDefs, resolvers } from "store";
+// import { defaultState, typeDefs, resolvers } from "store";
 
 Amplify.configure(appSyncConfig);
 
@@ -39,12 +39,12 @@ const link = ApolloLink.from([
 
 const client = new ApolloClient({
   link,
-  cache,
-  typeDefs,
-  resolvers
+  cache
+  // typeDefs,
+  // resolvers
 });
 
-cache.writeData({ data: defaultState });
+//cache.writeData({ data: defaultState });
 
 ReactDOM.render(
   <ApolloProvider client={client}>
