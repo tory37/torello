@@ -11,6 +11,7 @@ import BoardCreateCard from "./board-create-card";
 import Board from "types/Board";
 import { getColumnCount, getTaskCount } from "utils/Board";
 import { Container, Grid } from "@material-ui/core";
+import BoardCreate from "./board-create/BoardCreate";
 
 const BoardSelector = () => {
   const { loading, data: boards } = useQuery<
@@ -60,6 +61,7 @@ const BoardSelector = () => {
           )}
         </div>
       </StyledBoardSelector>
+      <BoardCreate />
     </Container>
   );
 };

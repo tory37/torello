@@ -9,7 +9,7 @@ import {
   Container
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { StoreContainer } from "store";
+import StoreContainer from "store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const getStyles = () => {
@@ -27,13 +27,12 @@ const getStyles = () => {
 const BoardCreateCard = () => {
   const classes = getStyles()();
 
-  // const { isOpen } = storeHooks.createModal.useIsOpen();
-  // const openCloseModal = storeHooks.createModal.useOpenModal();
+  const {
+    isOpen: isCreateModalOpen,
+    open: openCreateModal
+  } = StoreContainer.useContainer().createModal;
 
-  const store = StoreContainer.useContainer();
-
-  // const onAddClick = (options: any) => openCloseModal();
-  const onAddClick = (options: any) => store.open();
+  const onAddClick = (options: any) => openCreateModal();
 
   return (
     <Card className={classes.card}>
@@ -52,7 +51,7 @@ const BoardCreateCard = () => {
               <FontAwesomeIcon icon="plus-circle" />
             </Typography>
           </Grid>
-          <Grid item>{store.isOpen ? "Open" : "Closed"}</Grid>
+          <Grid item>{isCreateModalOpen ? "Open" : "Closed"}</Grid>
         </Grid>
       </CardActionArea>
     </Card>

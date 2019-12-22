@@ -2,21 +2,27 @@ import { useState } from "react";
 import { createContainer } from "unstated-next";
 
 export const useStore = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  //#region Create Modal
+  const [createModalIsOpen, setCreateModalIsOpen] = useState<boolean>(false);
 
-  const open = () => {
-    setIsOpen(true);
+  const createModalActions = {
+    open: () => {
+      setCreateModalIsOpen(true);
+    },
+    close: () => {
+      setCreateModalIsOpen(false);
+    }
   };
-
-  const close = () => {
-    setIsOpen(false);
-  };
+  //#endregion
 
   return {
-    isOpen,
-    open,
-    close
+    createModal: {
+      isOpen: createModalIsOpen,
+      ...createModalActions
+    }
   };
 };
 
-export const StoreContainer = createContainer(useStore);
+const StoreContainer = createContainer(useStore);
+
+export default StoreContainer;

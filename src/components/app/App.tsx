@@ -11,7 +11,7 @@ import "typeface-roboto";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faPlus, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import NavBar from "components/nav-bar/NavBar";
-import { StoreContainer } from "store";
+import StoreContainer from "store";
 
 library.add(faPlus, faPlusCircle);
 //#endregion
