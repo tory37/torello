@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import StyledBoardSelector from "./BoardSelector.style";
 import { useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
@@ -12,12 +12,27 @@ import Board from "types/Board";
 import { getColumnCount, getTaskCount } from "utils/Board";
 import { Container, Grid } from "@material-ui/core";
 import BoardCreate from "./board-create/BoardCreate";
+import { onCreateBoard } from "graphql/subscriptions";
+import { buildSubscription } from "aws-appsync";
+import { Auth } from "aws-amplify";
 
 const BoardSelector = () => {
-  const { loading, data: boards } = useQuery<
+  const { loading, data: boards, subscribeToMore } = useQuery<
     ListBoardsQuery,
     ListBoardsQueryVariables
   >(gql(listBoards), { variables: { limit: 100 } });
+
+  useEffect(() => {
+    // subscribeToMore(buildSubscription(gql(onCreateBoard), gql(listBoards)));
+    const subscribeToBoards = async () =>
+      subscribeToMore({
+        document: gql(onCreateBoard),
+        variables: {
+          owner: (await Auth.currentSession()).getIdToken().payload.sub
+        }
+      });
+    subscribeToBoards();
+  }, [subscribeToMore]);
 
   return (
     <Container>

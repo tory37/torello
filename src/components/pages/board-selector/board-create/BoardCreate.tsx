@@ -1,30 +1,112 @@
-import React from "react";
-import { Backdrop, makeStyles, Card, Button } from "@material-ui/core";
+import React, { useState } from "react";
+import {
+  Backdrop,
+  makeStyles,
+  Card,
+  CardContent,
+  Typography,
+  CardMedia,
+  CardActions,
+  Button,
+  TextField,
+  Grid
+} from "@material-ui/core";
+import useForm from "react-hook-form";
 
 import StoreContainer from "store";
+import { GetBackgroundColors } from "utils/Board";
+import { useMutation } from "@apollo/react-hooks";
+import { CreateBoardMutation, CreateBoardMutationVariables } from "API";
+import gql from "graphql-tag";
+import { createBoard } from "graphql/mutations";
+import ColorPicker from "components/color-picker";
 
-const getStyles = () => {
+const getStyles = (color: string) => {
   return makeStyles({
     backdrop: {
       zIndex: 1000
     },
     card: {
       width: "250px"
+    },
+    previewImage: {
+      backgroundColor: color,
+      height: "50px"
     }
   });
 };
 
+interface IFormValues {
+  name: string;
+}
+
 const BoardCreate = () => {
-  const classes = getStyles()();
+  const colors = GetBackgroundColors();
+  const [backgroundColor, setBackgroundColor] = useState<string>(colors[0]);
+
+  const classes = getStyles(backgroundColor)();
 
   const { isOpen, close } = StoreContainer.useContainer().createModal;
 
+  const { register, handleSubmit } = useForm();
+
+  const [create, { loading, error }] = useMutation<
+    CreateBoardMutation,
+    CreateBoardMutationVariables
+  >(gql(createBoard), {
+    onCompleted() {
+      close();
+    }
+  });
+
+  const onSubmit = (values: any) => {
+    create({
+      variables: {
+        input: {
+          title: values.title,
+          backgroundColor
+        }
+      }
+    });
+  };
+
   return (
     <Backdrop open={isOpen} className={classes.backdrop}>
-      <Card className={classes.card}>THIS IS IT</Card>
-      <Button variant="contained" color="primary" onClick={close}>
-        Close
-      </Button>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Card className={classes.card}>
+          <CardMedia>
+            <div className={classes.previewImage} />
+          </CardMedia>
+          <CardContent>
+            <Grid container direction="column" spacing={2}>
+              <Grid item>
+                <TextField
+                  id="standard-basic"
+                  label="Board Name"
+                  name="title"
+                  inputRef={register}
+                />
+              </Grid>
+              <Grid item>
+                <ColorPicker onSetState={setBackgroundColor} />
+              </Grid>
+            </Grid>
+          </CardContent>
+          <CardActions>
+            <Button size="small" type="button" onClick={close}>
+              Cancel
+            </Button>
+            <Button
+              size="small"
+              color="primary"
+              variant="outlined"
+              type="submit"
+            >
+              Create Board
+            </Button>
+          </CardActions>
+        </Card>
+      </form>
     </Backdrop>
   );
 };

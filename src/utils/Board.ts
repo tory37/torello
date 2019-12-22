@@ -21,5 +21,14 @@ const sumTaskCountReducer = (total: number, count: number) => {
 };
 
 export const GetBackgroundColors = () => {
-  return ["yellow", "red", "blue", "orange", "purple", "green"];
+  return [
+    "red",
+    "orange",
+    "yellow",
+    "green",
+    "blue",
+    "purple",
+    "white",
+    "gray"
+  ];
 };
