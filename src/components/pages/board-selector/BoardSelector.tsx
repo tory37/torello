@@ -6,10 +6,6 @@ import gql from "graphql-tag";
 import { listBoards } from "graphql/queries";
 import { ListBoardsQuery, ListBoardsQueryVariables } from "API";
 
-import { onCreateBoard } from "graphql/subscriptions";
-
-import { buildSubscription } from "aws-appsync";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import BoardPreview from "./board-preview";
 import BoardCreateCard from "./board-create-card";
 import Board from "types/Board";

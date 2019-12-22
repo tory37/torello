@@ -26,6 +26,9 @@ const getStyles = (color: string) => {
     previewImage: {
       backgroundColor: color,
       height: "50px"
+    },
+    actionArea: {
+      height: "100%"
     }
   });
 };
@@ -41,7 +44,11 @@ const BoardPreview = ({
 
   return (
     <Card className={classes.card}>
-      <CardActionArea component={Link} to="/boards">
+      <CardActionArea
+        component={Link}
+        to="/boards"
+        className={classes.actionArea}
+      >
         <CardMedia>
           <div className={classes.previewImage} />
         </CardMedia>

@@ -5,12 +5,12 @@ import {
   Typography,
   CardMedia,
   CardContent,
-  Grid
+  Grid,
+  Container
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { storeHooks } from "store";
+import { StoreContainer } from "store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Container } from "aws-amplify-react";
 
 const getStyles = () => {
   return makeStyles({
@@ -27,32 +27,33 @@ const getStyles = () => {
 const BoardCreateCard = () => {
   const classes = getStyles()();
 
-  const { isOpen } = storeHooks.createModal.useIsOpen();
-  const openCloseModal = storeHooks.createModal.useOpenModal();
+  // const { isOpen } = storeHooks.createModal.useIsOpen();
+  // const openCloseModal = storeHooks.createModal.useOpenModal();
 
-  const onAddClick = (options: any) => openCloseModal();
+  const store = StoreContainer.useContainer();
+
+  // const onAddClick = (options: any) => openCloseModal();
+  const onAddClick = (options: any) => store.open();
 
   return (
     <Card className={classes.card}>
       <CardActionArea onClick={onAddClick} className={classes.actionArea}>
-        <Container>
-          <Grid
-            container
-            direction="column"
-            justify="space-around"
-            alignItems="center"
-          >
-            <Grid item>
-              <Typography variant="h6">Add</Typography>
-            </Grid>
-            <Grid item>
-              <Typography variant="h3">
-                <FontAwesomeIcon icon="plus-circle" />
-              </Typography>
-            </Grid>
-            <Grid item>{isOpen ? "Open" : "Closed"}</Grid>
+        <Grid
+          container
+          direction="column"
+          justify="space-around"
+          alignItems="center"
+        >
+          <Grid item>
+            <Typography variant="h6">New Board</Typography>
           </Grid>
-        </Container>
+          <Grid item>
+            <Typography variant="h3">
+              <FontAwesomeIcon icon="plus-circle" />
+            </Typography>
+          </Grid>
+          <Grid item>{store.isOpen ? "Open" : "Closed"}</Grid>
+        </Grid>
       </CardActionArea>
     </Card>
   );
