@@ -16,9 +16,7 @@ import useForm from "react-hook-form";
 import StoreContainer from "store";
 import { GetBackgroundColors } from "utils/Board";
 import { useMutation } from "@apollo/react-hooks";
-import { CreateBoardMutation, CreateBoardMutationVariables } from "API";
 import gql from "graphql-tag";
-import { createBoard } from "graphql/mutations";
 import ColorPicker from "components/color-picker";
 
 const getStyles = (color: string) => {
@@ -50,24 +48,31 @@ const BoardCreate = () => {
 
   const { register, handleSubmit } = useForm();
 
-  const [create, { loading, error }] = useMutation<
-    CreateBoardMutation,
-    CreateBoardMutationVariables
-  >(gql(createBoard), {
-    onCompleted() {
-      close();
-    }
-  });
+  // const [create, { loading, error }] = useMutation<
+  //   CreateBoardMutation,
+  //   CreateBoardMutationVariables
+  // >(gql(createBoard), {
+  //   // update(cache, { data: { createBoard } }) {
+  //   //   const { boards } = cache.readQuery({ query: gql(listBoards) });
+  //   //   cache.writeQuery({
+  //   //     query: gql(listBoards),
+  //   //     data: { boards: boards.concat([createBoard]) }
+  //   //   });
+  //   // },
+  //   onCompleted() {
+  //     close();
+  //   }
+  // });
 
   const onSubmit = (values: any) => {
-    create({
-      variables: {
-        input: {
-          title: values.title,
-          backgroundColor
-        }
-      }
-    });
+    // create({
+    //   variables: {
+    //     input: {
+    //       title: values.title,
+    //       backgroundColor
+    //     }
+    //   }
+    // });
   };
 
   return (

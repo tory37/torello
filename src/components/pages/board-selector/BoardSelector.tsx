@@ -1,38 +1,15 @@
 import React, { useEffect } from "react";
 import StyledBoardSelector from "./BoardSelector.style";
-import { useQuery } from "@apollo/react-hooks";
-import gql from "graphql-tag";
-
-import { listBoards } from "graphql/queries";
-import { ListBoardsQuery, ListBoardsQueryVariables } from "API";
+import OnMount from "components/on-mount";
 
 import BoardPreview from "./board-preview";
 import BoardCreateCard from "./board-create-card";
-import Board from "types/Board";
-import { getColumnCount, getTaskCount } from "utils/Board";
 import { Container, Grid } from "@material-ui/core";
 import BoardCreate from "./board-create/BoardCreate";
-import { onCreateBoard } from "graphql/subscriptions";
-import { buildSubscription } from "aws-appsync";
-import { Auth } from "aws-amplify";
+import { useListBoardPreviewsQuery } from "graphql/queries/listBoardPreviews";
 
 const BoardSelector = () => {
-  const { loading, data: boards, subscribeToMore } = useQuery<
-    ListBoardsQuery,
-    ListBoardsQueryVariables
-  >(gql(listBoards), { variables: { limit: 100 } });
-
-  useEffect(() => {
-    // subscribeToMore(buildSubscription(gql(onCreateBoard), gql(listBoards)));
-    const subscribeToBoards = async () =>
-      subscribeToMore({
-        document: gql(onCreateBoard),
-        variables: {
-          owner: (await Auth.currentSession()).getIdToken().payload.sub
-        }
-      });
-    subscribeToBoards();
-  }, [subscribeToMore]);
+  const { loading, data, subscribeToMore } = useListBoardPreviewsQuery();
 
   return (
     <Container>
@@ -44,35 +21,50 @@ const BoardSelector = () => {
         <div className="boards">
           {loading && <span>Loading...</span>}
           {!loading && (
-            <Grid
-              container
-              direction="row"
-              justify="flex-start"
-              alignItems="center"
-              spacing={4}
-            >
-              {boards &&
-                boards.listBoards &&
-                boards.listBoards.items &&
-                boards.listBoards.items.map(board => {
-                  return (
-                    board && (
-                      <Grid item key={board.id}>
-                        <BoardPreview
-                          title={board.title}
-                          backgroundColor={board.backgroundColor}
-                          columnCount={getColumnCount(board as Board)}
-                          taskCount={getTaskCount(board as Board)}
-                          isCreate={false}
-                        />
-                      </Grid>
-                    )
+            <React.Fragment>
+              {/* <OnMount
+                onEffect={() => {
+                  console.log("Subscribing to more");
+                  const sub = buildSubscription({
+                    query: gql(onCreateBoard),
+                    variables: {
+                      owner:
+                    }
+                  },
+                    gql(listBoards)
                   );
-                })}
-              <Grid item>
-                <BoardCreateCard />
+                  console.log(sub);
+                  return subscribeToMore(sub);
+                }}
+              /> */}
+              <Grid
+                container
+                direction="row"
+                justify="flex-start"
+                alignItems="center"
+                spacing={4}
+              >
+                {data &&
+                  data.boards &&
+                  data.boards.map(board => {
+                    return (
+                      board && (
+                        <Grid item key={board.id}>
+                          <BoardPreview
+                            title={board.title}
+                            backgroundColor={board.backgroundColor}
+                            columnCount={board.columnCount}
+                            taskCount={board.taskCount}
+                          />
+                        </Grid>
+                      )
+                    );
+                  })}
+                <Grid item>
+                  <BoardCreateCard />
+                </Grid>
               </Grid>
-            </Grid>
+            </React.Fragment>
           )}
         </div>
       </StyledBoardSelector>

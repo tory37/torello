@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  Card,
-  CardActionArea,
-  Typography,
-  CardMedia,
-  CardContent,
-  Grid,
-  Container
-} from "@material-ui/core";
+import { Card, CardActionArea, Typography, Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import StoreContainer from "store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

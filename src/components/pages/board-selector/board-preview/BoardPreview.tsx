@@ -14,7 +14,6 @@ type BoardPreviewProps = {
   columnCount: number;
   taskCount: number;
   backgroundColor: string;
-  isCreate: boolean;
 };
 
 const getStyles = (color: string) => {
@@ -37,8 +36,7 @@ const BoardPreview = ({
   title,
   columnCount,
   taskCount,
-  backgroundColor,
-  isCreate
+  backgroundColor
 }: BoardPreviewProps) => {
   const classes = getStyles(backgroundColor)();
 
@@ -53,16 +51,12 @@ const BoardPreview = ({
           <div className={classes.previewImage} />
         </CardMedia>
         <CardContent>
-          {!isCreate && (
-            <React.Fragment>
-              <Typography gutterBottom variant="h6" component="h2">
-                {title}
-              </Typography>
-              <Typography variant="body2" color="textSecondary" component="p">
-                Columns: {columnCount}, Cards: {taskCount}
-              </Typography>
-            </React.Fragment>
-          )}
+          <Typography gutterBottom variant="h6" component="h2">
+            {title}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" component="p">
+            Columns: {columnCount}, Cards: {taskCount}
+          </Typography>
         </CardContent>
       </CardActionArea>
     </Card>
