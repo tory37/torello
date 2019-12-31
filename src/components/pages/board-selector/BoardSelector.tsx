@@ -1,15 +1,44 @@
 import React, { useEffect } from "react";
 import StyledBoardSelector from "./BoardSelector.style";
-import OnMount from "components/on-mount";
 
 import BoardPreview from "./board-preview";
 import BoardCreateCard from "./board-create-card";
 import { Container, Grid } from "@material-ui/core";
 import BoardCreate from "./board-create/BoardCreate";
 import { useListBoardPreviewsQuery } from "graphql/queries/listBoardPreviews";
+import { BOARD_PREVIEWS_SUBSCRIPTION } from "graphql/subscriptions/boardPreview";
 
 const BoardSelector = () => {
-  const { loading, data, subscribeToMore } = useListBoardPreviewsQuery();
+  const {
+    loading: isLoading,
+    error,
+    data,
+    subscribeToMore
+  } = useListBoardPreviewsQuery();
+
+  useEffect(() => {
+    const unsubscribe = subscribeToMore({
+      document: BOARD_PREVIEWS_SUBSCRIPTION,
+      variables: {},
+      updateQuery: (prev, { subscriptionData }: any) => {
+        if (!subscriptionData.data) {
+          return prev;
+        }
+
+        console.log([...prev.boards, subscriptionData.data.board]);
+
+        const newState = Object.assign({}, prev, {
+          boards: [...prev.boards, subscriptionData.data.board]
+        });
+
+        console.log(newState);
+
+        return newState;
+      }
+    });
+
+    return () => unsubscribe();
+  }, [subscribeToMore]);
 
   return (
     <Container>
@@ -19,24 +48,9 @@ const BoardSelector = () => {
         </div>
 
         <div className="boards">
-          {loading && <span>Loading...</span>}
-          {!loading && (
+          {isLoading && <span>Loading...</span>}
+          {!isLoading && (
             <React.Fragment>
-              {/* <OnMount
-                onEffect={() => {
-                  console.log("Subscribing to more");
-                  const sub = buildSubscription({
-                    query: gql(onCreateBoard),
-                    variables: {
-                      owner:
-                    }
-                  },
-                    gql(listBoards)
-                  );
-                  console.log(sub);
-                  return subscribeToMore(sub);
-                }}
-              /> */}
               <Grid
                 container
                 direction="row"

@@ -1,19 +1,17 @@
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 
-interface BoardPreview {
-  id: number;
-  title: string;
-  backgroundColor: string;
-  columnCount: number;
-  taskCount: number;
+export interface BoardPreviews {
+  boards: {
+    id: number;
+    title: string;
+    backgroundColor: string;
+    columnCount: number;
+    taskCount: number;
+  }[];
 }
 
-interface BoardPreviewData {
-  boards: BoardPreview[];
-}
-
-const LIST_BOARD_PREVIEWS = gql`
+export const LIST_BOARD_PREVIEWS_QUERY = gql`
   query listBoardPreviews {
     boards {
       id
@@ -26,4 +24,4 @@ const LIST_BOARD_PREVIEWS = gql`
 `;
 
 export const useListBoardPreviewsQuery = () =>
-  useQuery<BoardPreviewData>(LIST_BOARD_PREVIEWS);
+  useQuery<BoardPreviews>(LIST_BOARD_PREVIEWS_QUERY);
