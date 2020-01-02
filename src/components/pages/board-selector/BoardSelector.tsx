@@ -65,6 +65,7 @@ const BoardSelector = () => {
                       board && (
                         <Grid item key={board.id}>
                           <BoardPreview
+                            id={board.id}
                             title={board.title}
                             backgroundColor={board.backgroundColor}
                             columnCount={board.columnCount}

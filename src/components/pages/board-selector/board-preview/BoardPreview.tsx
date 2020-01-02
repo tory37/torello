@@ -10,6 +10,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 
 type BoardPreviewProps = {
+  id: string;
   title: string;
   columnCount: number;
   taskCount: number;
@@ -33,6 +34,7 @@ const getStyles = (color: string) => {
 };
 
 const BoardPreview = ({
+  id,
   title,
   columnCount,
   taskCount,
@@ -44,7 +46,7 @@ const BoardPreview = ({
     <Card className={classes.card}>
       <CardActionArea
         component={Link}
-        to="/boards"
+        to={`/board/${id}`}
         className={classes.actionArea}
       >
         <CardMedia>

@@ -3,7 +3,7 @@ import { useMutation } from "@apollo/react-hooks";
 
 export interface CreateBoardMutation {
   board: {
-    id: number;
+    id: string;
     title: string;
     backgroundColor: string;
     columnCount: number;

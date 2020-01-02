@@ -1,7 +1,9 @@
 export const routeDefs = {
-  boardSelector: "/"
+  boardSelector: "/",
+  boardView: "/board"
 };
 
 export const routePaths = {
-  boardSelector: "/"
+  boardSelector: "/",
+  boardView: "/board/:id"
 };

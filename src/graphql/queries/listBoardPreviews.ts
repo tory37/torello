@@ -3,7 +3,7 @@ import { useQuery } from "@apollo/react-hooks";
 
 export interface BoardPreviews {
   boards: {
-    id: number;
+    id: string;
     title: string;
     backgroundColor: string;
     columnCount: number;

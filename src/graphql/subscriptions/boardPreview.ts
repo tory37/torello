@@ -1,7 +1,7 @@
 import gql from "graphql-tag";
 
 interface BoardPreview {
-  id: number;
+  id: string;
   title: string;
   backgroundColor: string;
   columnCount: number;
