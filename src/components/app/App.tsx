@@ -20,6 +20,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faPlus, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import NavBar from "components/nav-bar/NavBar";
 import StoreContainer from "store";
+import { makeStyles } from "@material-ui/core";
 
 library.add(faPlus, faPlusCircle);
 //#endregion
@@ -80,13 +81,33 @@ const client = new ApolloClient({
 
 //#endregion
 
+const getStyles = () => {
+  return makeStyles({
+    app: {
+      display: "flex",
+      flexDirection: "column",
+      height: "100%"
+    },
+    appContent: {
+      flexGrow: 1,
+      overflowY: "auto"
+    }
+  });
+};
+
 const App = () => {
+  const styles = getStyles()();
+
   return (
     <ApolloProvider client={client}>
       <CssBaseline>
         <StoreContainer.Provider>
-          <NavBar />
-          <Routes />
+          <div className={styles.app}>
+            <NavBar />
+            <div className={styles.appContent}>
+              <Routes />
+            </div>
+          </div>
         </StoreContainer.Provider>
       </CssBaseline>
     </ApolloProvider>

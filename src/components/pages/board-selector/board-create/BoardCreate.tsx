@@ -34,7 +34,7 @@ const getStyles = (color: string) => {
 };
 
 interface IFormValues {
-  name: string;
+  title: string;
 }
 
 const BoardCreate = () => {
@@ -45,7 +45,7 @@ const BoardCreate = () => {
 
   const { isOpen, close } = StoreContainer.useContainer().createModal;
 
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, errors } = useForm();
 
   const [create, { loading, error }] = useCreateBoardMutation(close);
 
@@ -69,11 +69,16 @@ const BoardCreate = () => {
             <Grid container direction="column" spacing={2}>
               <Grid item>
                 <TextField
-                  id="standard-basic"
+                  variant="filled"
                   label="Board Name"
                   name="title"
-                  inputRef={register}
+                  size="small"
+                  inputRef={register({
+                    required: true,
+                    maxLength: 20
+                  })}
                 />
+                {errors.title && errors.title.message}
               </Grid>
               <Grid item>
                 <ColorPicker onSetState={setBackgroundColor} />
