@@ -64,6 +64,7 @@ const BoardView = () => {
             <Grid item key={column.id}>
               <Column
                 id={column.id}
+                boardId={data.board.id}
                 title={column.title}
                 position={column.position}
                 tasks={column.tasks}

@@ -12,6 +12,7 @@ import {
   LinearProgress
 } from "@material-ui/core";
 import useForm from "react-hook-form";
+import * as yup from "yup";
 
 import StoreContainer from "store";
 import { GetBackgroundColors } from "utils/Board";
@@ -37,6 +38,13 @@ interface IFormValues {
   title: string;
 }
 
+const BoardCreateValidationSchema = yup.object().shape({
+  title: yup
+    .string()
+    .max(20, "20 character max")
+    .required()
+});
+
 const BoardCreate = () => {
   const colors = GetBackgroundColors();
   const [backgroundColor, setBackgroundColor] = useState<string>(colors[0]);
@@ -45,7 +53,9 @@ const BoardCreate = () => {
 
   const { isOpen, close } = StoreContainer.useContainer().createModal;
 
-  const { register, handleSubmit, errors } = useForm();
+  const { register, handleSubmit, errors } = useForm({
+    validationSchema: BoardCreateValidationSchema
+  });
 
   const [create, { loading, error }] = useCreateBoardMutation(close);
 
@@ -73,12 +83,10 @@ const BoardCreate = () => {
                   label="Board Name"
                   name="title"
                   size="small"
-                  inputRef={register({
-                    required: true,
-                    maxLength: 20
-                  })}
+                  error={errors.title ? true : false}
+                  helperText={errors.title ? errors.title.message : ""}
+                  inputRef={register}
                 />
-                {errors.title && errors.title.message}
               </Grid>
               <Grid item>
                 <ColorPicker onSetState={setBackgroundColor} />

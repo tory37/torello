@@ -1,17 +1,11 @@
-import React from "react";
-import {
-  Container,
-  Grid,
-  Card,
-  Typography,
-  CardActionArea,
-  CardHeader,
-  CardContent,
-  makeStyles
-} from "@material-ui/core";
+import React, { useState } from "react";
+import { Grid, Card, Typography, makeStyles } from "@material-ui/core";
+import TaskCreate from "components/task-create";
+import Task from "components/task";
 
-interface IProps {
+interface IColumnProps {
   id: string;
+  boardId: string;
   title: string;
   position: number;
   tasks: {
@@ -30,15 +24,22 @@ const getStyles = () => {
       padding: "5px",
       backgroundColor: "#ebecf0",
       overflowY: "auto"
-    },
-    task: {
-      padding: "5px"
     }
   });
 };
 
-const Column = ({ id, title, tasks }: IProps) => {
+const Column = ({ id, boardId, title, tasks }: IColumnProps) => {
   const styles = getStyles()();
+
+  const [expanded, setExpanded] = useState<string | false>(false);
+
+  const handleTaskExpansion = (taskId: string) => (
+    event: React.ChangeEvent<{}>,
+    isExpanded: boolean
+  ) => {
+    setExpanded(isExpanded ? taskId : false);
+  };
+
   return (
     <Card className={styles.column}>
       <Grid container direction="column" spacing={1}>
@@ -48,15 +49,18 @@ const Column = ({ id, title, tasks }: IProps) => {
         {tasks &&
           tasks.map(task => (
             <Grid item key={task.id}>
-              <Card>
-                <CardActionArea>
-                  <Typography className={styles.task} variant="subtitle1">
-                    {title}
-                  </Typography>
-                </CardActionArea>
-              </Card>
+              <Task
+                title={task.title}
+                description={task.description}
+                id={task.id}
+                isExpanded={expanded === task.id}
+                onExpand={handleTaskExpansion(task.id)}
+              />
             </Grid>
           ))}
+        <Grid item>
+          <TaskCreate columnId={id} />
+        </Grid>
       </Grid>
     </Card>
   );

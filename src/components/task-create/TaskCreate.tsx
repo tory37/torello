@@ -1,69 +1,55 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  makeStyles,
-  Typography,
   Card,
+  makeStyles,
   CardActionArea,
+  Typography,
   TextField,
   CardActions,
   Button,
-  Container,
-  CardContent,
   Grid
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useForm from "react-hook-form";
-import { useCreateColumnMutation } from "graphql/mutations/createColumn";
+import { useCreateTaskMutation } from "graphql/mutations/createTask";
 import * as yup from "yup";
 
-interface IColumnCreateProps {
-  boardId: string;
+interface ITaskCreateProps {
+  columnId: string;
 }
 
 const getStyles = () => {
   return makeStyles({
-    column: {
-      width: "250px",
-      backgroundColor: "hsla(0,0%,100%,.24)",
-      color: "white"
+    task: {
+      backgroundColor: "hsla(0,0%,100%)"
     },
     content: {
       margin: "5px"
     },
-    container: {
-      paddingTop: "4px"
-    },
     actions: {
       paddingLeft: "0"
-    },
-    createButton: {
-      color: "white",
-      borderColor: "white"
-    },
-    cancelButton: {
-      color: "white"
     }
   });
 };
 
-const ColumnCreateValidationSchema = yup.object().shape({
+const TaskCreateValidationSchema = yup.object().shape({
   title: yup
     .string()
     .max(20, "20 character max")
-    .required()
+    .required(),
+  description: yup.string()
 });
 
-const ColumnCreate = ({ boardId }: IColumnCreateProps) => {
-  const styles = getStyles()();
-
+const TaskCreate = ({ columnId }: ITaskCreateProps) => {
   const [isCreating, setIsCreating] = useState<boolean>(false);
 
+  const styles = getStyles()();
+
   const { register, handleSubmit, errors } = useForm({
-    validationSchema: ColumnCreateValidationSchema
+    validationSchema: TaskCreateValidationSchema
   });
 
-  const [create, { loading, error }] = useCreateColumnMutation(() =>
+  const [create, { loading, error }] = useCreateTaskMutation(() =>
     setIsCreating(false)
   );
 
@@ -71,14 +57,19 @@ const ColumnCreate = ({ boardId }: IColumnCreateProps) => {
     create({
       variables: {
         title: values.title,
+        description: values.description,
         position: 0,
-        boardId
+        columnId
       }
     });
   };
 
+  useEffect(() => {
+    console.log(errors);
+  }, [errors]);
+
   return (
-    <Card className={styles.column}>
+    <Card className={styles.task}>
       {!isCreating && (
         <CardActionArea onClick={() => setIsCreating(true)}>
           <Grid container spacing={1} justify="flex-start" alignItems="center">
@@ -87,7 +78,7 @@ const ColumnCreate = ({ boardId }: IColumnCreateProps) => {
             </Grid>
             <Grid item>
               <Typography className={styles.content} variant="subtitle2">
-                New Column
+                New Task
               </Typography>
             </Grid>
           </Grid>
@@ -96,15 +87,29 @@ const ColumnCreate = ({ boardId }: IColumnCreateProps) => {
 
       {isCreating && (
         <form className={styles.content} onSubmit={handleSubmit(onSubmit)}>
-          <TextField
-            variant="filled"
-            label="Column Name"
-            name="title"
-            size="small"
-            error={errors.title ? true : false}
-            helperText={errors.title ? errors.title.message : ""}
-            inputRef={register}
-          />
+          <Grid container spacing={1} direction="column">
+            <Grid item>
+              <TextField
+                variant="filled"
+                label="Task Name*"
+                name="title"
+                size="small"
+                error={errors.title ? true : false}
+                helperText={errors.title ? errors.title.message : ""}
+                inputRef={register}
+              />
+            </Grid>
+            <Grid item>
+              <TextField
+                variant="filled"
+                label="Description"
+                name="description"
+                size="small"
+                multiline={true}
+                inputRef={register}
+              />
+            </Grid>
+          </Grid>
 
           <CardActions className={styles.actions}>
             <Button
@@ -112,7 +117,6 @@ const ColumnCreate = ({ boardId }: IColumnCreateProps) => {
               type="button"
               onClick={() => setIsCreating(false)}
               disabled={loading}
-              className={styles.cancelButton}
             >
               Cancel
             </Button>
@@ -122,7 +126,6 @@ const ColumnCreate = ({ boardId }: IColumnCreateProps) => {
               variant="outlined"
               type="submit"
               disabled={loading}
-              className={styles.createButton}
             >
               Create
             </Button>
@@ -133,4 +136,4 @@ const ColumnCreate = ({ boardId }: IColumnCreateProps) => {
   );
 };
 
-export default ColumnCreate;
+export default TaskCreate;
