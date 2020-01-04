@@ -4,22 +4,20 @@ import {
   makeStyles,
   Card,
   CardContent,
-  Typography,
   CardMedia,
   CardActions,
   Button,
   TextField,
-  Grid
+  Grid,
+  LinearProgress
 } from "@material-ui/core";
 import useForm from "react-hook-form";
+import * as yup from "yup";
 
 import StoreContainer from "store";
 import { GetBackgroundColors } from "utils/Board";
-import { useMutation } from "@apollo/react-hooks";
-import { CreateBoardMutation, CreateBoardMutationVariables } from "API";
-import gql from "graphql-tag";
-import { createBoard } from "graphql/mutations";
 import ColorPicker from "components/color-picker";
+import { useCreateBoardMutation } from "graphql/mutations/createBoard";
 
 const getStyles = (color: string) => {
   return makeStyles({
@@ -37,8 +35,15 @@ const getStyles = (color: string) => {
 };
 
 interface IFormValues {
-  name: string;
+  title: string;
 }
+
+const BoardCreateValidationSchema = yup.object().shape({
+  title: yup
+    .string()
+    .max(20, "20 character max")
+    .required()
+});
 
 const BoardCreate = () => {
   const colors = GetBackgroundColors();
@@ -48,24 +53,17 @@ const BoardCreate = () => {
 
   const { isOpen, close } = StoreContainer.useContainer().createModal;
 
-  const { register, handleSubmit } = useForm();
-
-  const [create, { loading, error }] = useMutation<
-    CreateBoardMutation,
-    CreateBoardMutationVariables
-  >(gql(createBoard), {
-    onCompleted() {
-      close();
-    }
+  const { register, handleSubmit, errors } = useForm({
+    validationSchema: BoardCreateValidationSchema
   });
+
+  const [create, { loading, error }] = useCreateBoardMutation(close);
 
   const onSubmit = (values: any) => {
     create({
       variables: {
-        input: {
-          title: values.title,
-          backgroundColor
-        }
+        title: values.title,
+        backgroundColor
       }
     });
   };
@@ -81,9 +79,12 @@ const BoardCreate = () => {
             <Grid container direction="column" spacing={2}>
               <Grid item>
                 <TextField
-                  id="standard-basic"
+                  variant="filled"
                   label="Board Name"
                   name="title"
+                  size="small"
+                  error={errors.title ? true : false}
+                  helperText={errors.title ? errors.title.message : ""}
                   inputRef={register}
                 />
               </Grid>
@@ -93,7 +94,12 @@ const BoardCreate = () => {
             </Grid>
           </CardContent>
           <CardActions>
-            <Button size="small" type="button" onClick={close}>
+            <Button
+              size="small"
+              type="button"
+              onClick={close}
+              disabled={loading}
+            >
               Cancel
             </Button>
             <Button
@@ -101,10 +107,12 @@ const BoardCreate = () => {
               color="primary"
               variant="outlined"
               type="submit"
+              disabled={loading}
             >
               Create Board
             </Button>
           </CardActions>
+          {loading && <LinearProgress />}
         </Card>
       </form>
     </Backdrop>

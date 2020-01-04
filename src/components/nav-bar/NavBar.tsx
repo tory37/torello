@@ -6,7 +6,7 @@ import Typography from "@material-ui/core/Typography";
 const NavBar = () => {
   return (
     <div>
-      <AppBar position="static">
+      <AppBar position="sticky">
         <Toolbar>
           <Typography variant="subtitle1" color="inherit">
             Torello
