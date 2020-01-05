@@ -9,12 +9,12 @@ interface BoardPreview {
 }
 
 interface BoardPreviewData {
-  board: BoardPreview;
+  boards: BoardPreview;
 }
 
 export const BOARD_PREVIEWS_SUBSCRIPTION = gql`
   subscription {
-    board {
+    boardSub {
       id
       title
       backgroundColor

@@ -25,10 +25,10 @@ const BoardSelector = () => {
           return prev;
         }
 
-        console.log([...prev.boards, subscriptionData.data.board]);
+        console.log([...prev.boards, subscriptionData.data.boardSub]);
 
         const newState = Object.assign({}, prev, {
-          boards: [...prev.boards, subscriptionData.data.board]
+          boards: [...prev.boards, subscriptionData.data.boardSub]
         });
 
         console.log(newState);

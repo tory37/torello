@@ -15,6 +15,11 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import "typeface-roboto";
 //#endregion
 
+//#region DND Setup
+import { DndProvider } from "react-dnd";
+import DndBackend from "react-dnd-html5-backend";
+//#endregion
+
 //#region Fontawesome Setup
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faPlus, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
@@ -102,12 +107,14 @@ const App = () => {
     <ApolloProvider client={client}>
       <CssBaseline>
         <StoreContainer.Provider>
-          <div className={styles.app}>
-            <NavBar />
-            <div className={styles.appContent}>
-              <Routes />
+          <DndProvider backend={DndBackend}>
+            <div className={styles.app}>
+              <NavBar />
+              <div className={styles.appContent}>
+                <Routes />
+              </div>
             </div>
-          </div>
+          </DndProvider>
         </StoreContainer.Provider>
       </CssBaseline>
     </ApolloProvider>
