@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import { Container, Grid, makeStyles } from "@material-ui/core";
 import { useGetBoardQuery } from "graphql/queries/getBoard";
@@ -24,9 +24,7 @@ const getStyles = (backgroundColor: string) => {
 
 const BoardView = () => {
   const { id } = useParams<TParams>();
-  const { loading: isLoading, error, data, subscribeToMore } = useGetBoardQuery(
-    id
-  );
+  const { loading: isLoading, data } = useGetBoardQuery(id);
 
   let styles = getStyles(data?.board.backgroundColor || "white")();
 

@@ -11,7 +11,6 @@ import { BOARD_PREVIEWS_SUBSCRIPTION } from "graphql/subscriptions/boardPreview"
 const BoardSelector = () => {
   const {
     loading: isLoading,
-    error,
     data,
     subscribeToMore
   } = useListBoardPreviewsQuery();

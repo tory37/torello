@@ -57,7 +57,7 @@ const BoardCreate = () => {
     validationSchema: BoardCreateValidationSchema
   });
 
-  const [create, { loading, error }] = useCreateBoardMutation(close);
+  const [create, { loading }] = useCreateBoardMutation(close);
 
   const onSubmit = (values: any) => {
     create({

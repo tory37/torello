@@ -49,7 +49,7 @@ const TaskCreate = ({ columnId }: ITaskCreateProps) => {
     validationSchema: TaskCreateValidationSchema
   });
 
-  const [create, { loading, error }] = useCreateTaskMutation(() =>
+  const [create, { loading }] = useCreateTaskMutation(() =>
     setIsCreating(false)
   );
 

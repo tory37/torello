@@ -7,12 +7,9 @@ import {
   TextField,
   CardActions,
   Button,
-  Container,
-  CardContent,
   Grid
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useForm from "react-hook-form";
 import { useCreateColumnMutation } from "graphql/mutations/createColumn";
 import * as yup from "yup";
@@ -63,7 +60,7 @@ const ColumnCreate = ({ boardId }: IColumnCreateProps) => {
     validationSchema: ColumnCreateValidationSchema
   });
 
-  const [create, { loading, error }] = useCreateColumnMutation(() =>
+  const [create, { loading }] = useCreateColumnMutation(() =>
     setIsCreating(false)
   );
 
