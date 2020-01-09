@@ -17,32 +17,18 @@ export const GOOGLE_LOGIN_MUTATION = gql`
   mutation authGoogle($token: String) {
     authGoogle(token: $token) {
       token
-      user {
-        id
-      }
     }
   }
 `;
 
-export const useGoogleLoginMutation = (onCompleted: () => void) =>
+export const useGoogleLoginMutation = (
+  onCompleted: (data: GoogleLoginMutation) => void
+) =>
   useMutation<GoogleLoginMutation, GoogleLoginMutationVariables>(
     GOOGLE_LOGIN_MUTATION,
     {
-      update(cache, mutationResult) {
-        if (
-          mutationResult &&
-          mutationResult.data &&
-          mutationResult.data.authGoogle &&
-          mutationResult.data.authGoogle.token
-        ) {
-          localStorage.set(
-            "torello_auth_token",
-            mutationResult.data.authGoogle.token
-          );
-        }
-      },
-      onCompleted() {
-        onCompleted();
+      onCompleted(data) {
+        onCompleted(data);
       }
     }
   );

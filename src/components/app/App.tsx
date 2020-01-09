@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Routes from "routes";
 import ApolloWrapper from "components/app/apollo-wrapper";
+import { useLazyGetLoggedInUserQuery } from "graphql/queries/getLoggedInUser";
+import jwtDecode from "jwt-decode";
 
 //#region Material UI Setup
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -18,6 +20,7 @@ import { faPlus, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import NavBar from "components/nav-bar/NavBar";
 import StoreContainer from "store";
 import { makeStyles } from "@material-ui/core";
+import Authenticator from "components/authenticator";
 
 library.add(faPlus, faPlusCircle);
 //#endregion
@@ -40,20 +43,22 @@ const App = () => {
   const styles = getStyles()();
 
   return (
-    <ApolloWrapper>
-      <CssBaseline>
-        <StoreContainer.Provider>
-          <DndProvider backend={DndBackend}>
-            <div className={styles.app}>
-              <NavBar />
-              <div className={styles.appContent}>
-                <Routes />
+    <StoreContainer.Provider>
+      <Authenticator>
+        <ApolloWrapper>
+          <CssBaseline>
+            <DndProvider backend={DndBackend}>
+              <div className={styles.app}>
+                <NavBar />
+                <div className={styles.appContent}>
+                  <Routes />
+                </div>
               </div>
-            </div>
-          </DndProvider>
-        </StoreContainer.Provider>
-      </CssBaseline>
-    </ApolloWrapper>
+            </DndProvider>
+          </CssBaseline>
+        </ApolloWrapper>
+      </Authenticator>
+    </StoreContainer.Provider>
   );
 };
 

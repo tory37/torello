@@ -1,20 +1,43 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { GoogleLogin } from "react-google-login";
-import { useGoogleLoginMutation } from "graphql/mutations/googleLogin";
+import {
+  useGoogleLoginMutation,
+  GoogleLoginMutation
+} from "graphql/mutations/googleLogin";
 import { useHistory } from "react-router";
+import StoreContainer from "store";
+import { getAuthTokenKey } from "utils/auth";
 
 const Login = () => {
-  const onApiSuccess = () => {
+  const {
+    authToken,
+    setAuthToken,
+    finishLoadingAuth,
+    startLoadingAuth
+  } = StoreContainer.useContainer().auth;
+
+  const history = useHistory();
+
+  useEffect(() => {
+    if (authToken) {
+      history.push("/boards");
+    }
+  }, [authToken]);
+
+  const onApiSuccess = (data: GoogleLoginMutation) => {
+    localStorage.setItem(getAuthTokenKey(), data.authGoogle.token);
+    setAuthToken(data.authGoogle.token);
+    finishLoadingAuth();
     history.push("/boards");
   };
 
-  const [login] = useGoogleLoginMutation(onApiSuccess);
-  const history = useHistory();
+  const [login, { loading }] = useGoogleLoginMutation(onApiSuccess);
 
   const onGoogleSuccess = (response: any) => {
     console.log(response);
     if (response && response.accessToken) {
       console.log(response);
+      startLoadingAuth();
       login({
         variables: {
           token: response.accessToken

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 // Apollo Imports
 import ApolloClient from "apollo-client";
@@ -7,60 +7,79 @@ import { HttpLink } from "apollo-link-http";
 import { split } from "apollo-link";
 import { getMainDefinition } from "apollo-utilities";
 import { setContext } from "apollo-link-context";
-import { InMemoryCache } from "apollo-cache-inmemory";
+import { InMemoryCache, NormalizedCacheObject } from "apollo-cache-inmemory";
 import { ApolloProvider } from "@apollo/react-hooks";
+import StoreContainer from "store";
+import { ClientOptions } from "subscriptions-transport-ws";
+import usePrevious from "hooks/usePrevious";
+import { useLazyGetLoggedInUserQuery } from "graphql/queries/getLoggedInUser";
 
 //#region Setup
 const httpLink = new HttpLink({
   uri: process.env.REACT_APP_API_URL
 });
 
-const googleToken = localStorage.getItem("torello_auth_token");
-
-const wsLink = new WebSocketLink({
-  uri: process.env.REACT_APP_WS_URL as string,
-  options: {
-    reconnect: true,
-    connectionParams: () => ({
-      Authorization: googleToken ? `Bearer ${googleToken}` : ""
-    })
-  }
-});
-
-const authLink = setContext((_, { headers }) => {
-  //const token = localStorage.getItem("token");
-  return {
-    headers: {
-      ...headers,
-      Authorization: googleToken ? `Bearer ${googleToken}` : ""
-    }
+const getWsLink = (authToken: string | null) => {
+  const options: ClientOptions | undefined = {
+    reconnect: true
   };
-});
 
-const link = split(
-  ({ query }) => {
-    const definition = getMainDefinition(query);
-    return (
-      definition.kind === "OperationDefinition" &&
-      definition.operation === "subscription"
-    );
-  },
-  wsLink,
-  httpLink
-);
-
-const client = new ApolloClient({
-  link: authLink.concat(link),
-  cache: new InMemoryCache(),
-  defaultOptions: {
-    watchQuery: {
-      fetchPolicy: "cache-and-network"
-    },
-    query: {
-      fetchPolicy: "network-only"
-    }
+  if (authToken && authToken.length > 0) {
+    options.connectionParams = () => ({
+      Authorization: `Bearer ${authToken}`
+    });
   }
-});
+
+  return new WebSocketLink({
+    uri: process.env.REACT_APP_WS_URL as string,
+    options
+  });
+};
+
+const getAuthLink = (authToken: string | null) =>
+  setContext((_, { headers }) => {
+    const _headers = {
+      ...headers
+    };
+
+    if (authToken && authToken.length > 0) {
+      _headers.Authorization = `Bearer ${authToken}`;
+    }
+
+    return {
+      headers: {
+        headers: _headers,
+        Authorization: authToken ? `Bearer ${authToken}` : ""
+      }
+    };
+  });
+
+const getLink = (authToken: string | null) =>
+  split(
+    ({ query }) => {
+      const definition = getMainDefinition(query);
+      return (
+        definition.kind === "OperationDefinition" &&
+        definition.operation === "subscription"
+      );
+    },
+    getWsLink(authToken),
+    httpLink
+  );
+
+const getClient = (authToken: string | null) =>
+  new ApolloClient({
+    link: getAuthLink(authToken).concat(getLink(authToken)),
+    cache: new InMemoryCache(),
+    defaultOptions: {
+      watchQuery: {
+        fetchPolicy: "cache-and-network"
+      },
+      query: {
+        fetchPolicy: "network-only"
+      }
+    }
+  });
 //#endregion
 
 interface IApolloWrapperProps {
@@ -68,7 +87,25 @@ interface IApolloWrapperProps {
 }
 
 const ApolloWrapper = ({ children }: IApolloWrapperProps) => {
-  return <ApolloProvider client={client}>{{ children }}</ApolloProvider>;
+  const { authToken } = StoreContainer.useContainer().auth;
+  const prevAuthToken = usePrevious<string | null>(authToken);
+
+  const [client, setClient] = useState<ApolloClient<NormalizedCacheObject>>(
+    getClient(authToken)
+  );
+
+  useEffect(() => {
+    if (prevAuthToken !== authToken) {
+      setClient(getClient(authToken));
+    }
+  }, [authToken]);
+
+  interface IGetUserProps {
+    children: React.ReactNode;
+    authToken: string | null;
+  }
+
+  return <ApolloProvider client={client}>{children}</ApolloProvider>;
 };
 
 export default ApolloWrapper;

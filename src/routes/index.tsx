@@ -1,5 +1,11 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect
+} from "react-router-dom";
+import PrivateRoute from "components/private-route";
 
 // import { routeDefs } from "./routeDefs";
 
@@ -14,8 +20,13 @@ const Routes = () => (
     {/* <Layout> */}
     <Switch>
       <Route exact path={"/login"} component={Login} />
-      <Route exact path={"/"} component={BoardSelector} />
+      <PrivateRoute exact path="/boards" component={BoardSelector} />
       <Route exact path={"/board/:id"} component={BoardView} />
+      <Redirect
+        to={{
+          pathname: "/login"
+        }}
+      />
       {/* <Route component={NotFound} /> */}
     </Switch>
     {/* </Layout> */}

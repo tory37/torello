@@ -1,32 +1,39 @@
-import React, { useEffect, useState } from "react";
-import { useGoogleLoginMutation } from "graphql/mutations/googleLogin";
+import React from "react";
 import { Route, Redirect, RouteProps } from "react-router-dom";
+import StoreContainer from "store";
 
 interface IPrivateRouteProps extends RouteProps {
   component: any;
-  isLoggedIn: boolean;
 }
 
 const PrivateRoute = ({
   component: Component,
-  isLoggedIn,
   ...rest
 }: IPrivateRouteProps) => {
+  const { isLoadingAuth, authToken } = StoreContainer.useContainer().auth;
+
   return (
-    <Route
-      {...rest}
-      render={routeProps =>
-        isLoggedIn ? (
-          <Component {...routeProps} />
-        ) : (
-          <Redirect
-            to={{
-              pathname: "/login",
-              state: { from: routeProps.location }
-            }}
-          />
-        )
-      }
-    />
+    <React.Fragment>
+      {isLoadingAuth && <div>Loading...</div>}
+      {!isLoadingAuth && (
+        <Route
+          {...rest}
+          render={routeProps =>
+            authToken ? (
+              <Component {...routeProps} />
+            ) : (
+              <Redirect
+                to={{
+                  pathname: "/login",
+                  state: { from: routeProps.location }
+                }}
+              />
+            )
+          }
+        />
+      )}
+    </React.Fragment>
   );
 };
+
+export default PrivateRoute;
