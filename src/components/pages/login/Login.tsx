@@ -6,7 +6,7 @@ import {
 } from "graphql/mutations/googleLogin";
 import { useHistory } from "react-router";
 import StoreContainer from "store";
-import { getAuthTokenKey } from "utils/auth";
+import { authTokenKey } from "utils/auth";
 
 const Login = () => {
   const {
@@ -25,7 +25,7 @@ const Login = () => {
   }, [authToken]);
 
   const onApiSuccess = (data: GoogleLoginMutation) => {
-    localStorage.setItem(getAuthTokenKey(), data.authGoogle.token);
+    localStorage.setItem(authTokenKey, data.authGoogle.token);
     setAuthToken(data.authGoogle.token);
     finishLoadingAuth();
     history.push("/boards");

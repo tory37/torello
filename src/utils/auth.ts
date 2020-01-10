@@ -1,1 +1,1 @@
-export const getAuthTokenKey = () => "torello_auth_token";
+export const authTokenKey = "torello_auth_token";

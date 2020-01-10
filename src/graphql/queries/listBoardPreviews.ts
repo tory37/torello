@@ -1,5 +1,5 @@
 import gql from "graphql-tag";
-import { useQuery } from "@apollo/react-hooks";
+import { useQuery, useLazyQuery } from "@apollo/react-hooks";
 
 export interface BoardPreviews {
   boards: {
@@ -25,3 +25,6 @@ export const LIST_BOARD_PREVIEWS_QUERY = gql`
 
 export const useListBoardPreviewsQuery = () =>
   useQuery<BoardPreviews>(LIST_BOARD_PREVIEWS_QUERY);
+
+export const useLazyListBoardPreviewsQuery = () =>
+  useLazyQuery<BoardPreviews>(LIST_BOARD_PREVIEWS_QUERY);

@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import StoreContainer from "store";
 import jwtDecode from "jwt-decode";
-import { getAuthTokenKey } from "utils/auth";
+import { authTokenKey } from "utils/auth";
+import { useApolloClient } from "@apollo/react-hooks";
 
 interface IAuthenticatorProps {
   children: React.ReactNode;
@@ -10,23 +11,21 @@ interface IAuthenticatorProps {
 const Authenticator = ({ children }: IAuthenticatorProps) => {
   const auth = StoreContainer.useContainer().auth;
 
-  useEffect(() => {
-    const token = localStorage.getItem(getAuthTokenKey());
+  const token = localStorage.getItem(authTokenKey);
 
-    if (token && token.length > 0) {
-      const decoded: any = jwtDecode(token);
+  if (token && token.length > 0) {
+    const decoded: any = jwtDecode(token);
 
-      const currentTime = Date.now() / 1000;
-      if (decoded.exp < currentTime) {
-        localStorage.setItem(getAuthTokenKey(), "");
-      } else {
-        auth.setAuthToken(token);
-      }
-      auth.finishLoadingAuth();
+    const currentTime = Date.now() / 1000;
+    if (decoded.exp < currentTime) {
+      localStorage.setItem(authTokenKey, "");
     } else {
-      auth.finishLoadingAuth();
+      auth.setAuthToken(token);
     }
-  }, []);
+    auth.finishLoadingAuth();
+  } else {
+    auth.finishLoadingAuth();
+  }
 
   return (
     <React.Fragment>

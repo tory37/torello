@@ -37,7 +37,7 @@ const BoardSelector = () => {
     });
 
     return () => unsubscribe();
-  }, [subscribeToMore]);
+  }, []);
 
   return (
     <Container>
