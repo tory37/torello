@@ -19,7 +19,7 @@ const PrivateRoute = ({
         <Route
           {...rest}
           render={routeProps =>
-            authToken ? (
+            authToken && authToken.length > 0 ? (
               <Component {...routeProps} />
             ) : (
               <Redirect

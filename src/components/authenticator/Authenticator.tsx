@@ -18,7 +18,7 @@ const Authenticator = ({ children }: IAuthenticatorProps) => {
 
     const currentTime = Date.now() / 1000;
     if (decoded.exp < currentTime) {
-      localStorage.setItem(authTokenKey, "");
+      localStorage.removeItem(authTokenKey);
     } else {
       auth.setAuthToken(token);
     }

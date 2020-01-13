@@ -7,15 +7,10 @@ interface BoardPreview {
   backgroundColor: string;
   columnCount: number;
   taskCount: number;
-  auhtorization: string;
 }
 
 interface BoardPreviewData {
   boards: BoardPreview;
-}
-
-interface BoardPreviewSubVariables {
-  authorization: string;
 }
 
 export const BOARD_PREVIEWS_SUBSCRIPTION = gql`
