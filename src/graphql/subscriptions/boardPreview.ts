@@ -14,8 +14,8 @@ interface BoardPreviewData {
 }
 
 export const BOARD_PREVIEWS_SUBSCRIPTION = gql`
-  subscription boardSub {
-    boardSub {
+  subscription boardSub($authToken: String!) {
+    boardSub(authToken: $authToken) {
       id
       title
       backgroundColor

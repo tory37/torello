@@ -7,6 +7,7 @@ import { Container, Grid } from "@material-ui/core";
 import BoardCreate from "./board-create/BoardCreate";
 import { useListBoardPreviewsQuery } from "graphql/queries/listBoardPreviews";
 import { BOARD_PREVIEWS_SUBSCRIPTION } from "graphql/subscriptions/boardPreview";
+import { authTokenKey } from "utils/auth";
 
 const BoardSelector = () => {
   const {
@@ -16,21 +17,20 @@ const BoardSelector = () => {
   } = useListBoardPreviewsQuery();
 
   useEffect(() => {
+    const token = localStorage.getItem(authTokenKey);
     const unsubscribe = subscribeToMore({
       document: BOARD_PREVIEWS_SUBSCRIPTION,
-      variables: {},
+      variables: {
+        authToken: token ? `Bearer ${token}` : ``
+      },
       updateQuery: (prev, { subscriptionData }: any) => {
         if (!subscriptionData.data) {
           return prev;
         }
 
-        console.log([...prev.boards, subscriptionData.data.boardSub]);
-
         const newState = Object.assign({}, prev, {
           boards: [...prev.boards, subscriptionData.data.boardSub]
         });
-
-        console.log(newState);
 
         return newState;
       }

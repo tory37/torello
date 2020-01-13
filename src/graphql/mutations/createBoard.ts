@@ -32,18 +32,7 @@ export const useCreateBoardMutation = (onCompleted: () => void) =>
   useMutation<CreateBoardMutation, CreateBoardMutationVariables>(
     CREATE_BOARD_MUTATION,
     {
-      update(cache) {
-        //     cache.writeQuery({
-        //       query: gql(listBoards),
-        //       data: { boards: boards.concat([createBoard]) }
-        //     });
-        //     const cachedBoards = cache.readQuery({ query: gql(LIST_BOARD_PREVIEWS_QUERY) });
-        //     const newState = Object.assign({}, prev, {
-        //       boards: [...prev.boards, subscriptionData.data.board]
-        //     });
-        //     console.log(newState);
-        //     return newState;
-      },
+      update(cache) {},
       onCompleted() {
         onCompleted();
       }

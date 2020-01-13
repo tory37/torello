@@ -34,9 +34,7 @@ const Login = () => {
   const [login, { loading }] = useGoogleLoginMutation(onApiSuccess);
 
   const onGoogleSuccess = (response: any) => {
-    console.log(response);
     if (response && response.accessToken) {
-      console.log(response);
       startLoadingAuth();
       login({
         variables: {
