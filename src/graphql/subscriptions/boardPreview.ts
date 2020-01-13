@@ -1,4 +1,5 @@
 import gql from "graphql-tag";
+import { useSubscription } from "@apollo/react-hooks";
 
 interface BoardPreview {
   id: string;
@@ -9,12 +10,12 @@ interface BoardPreview {
 }
 
 interface BoardPreviewData {
-  board: BoardPreview;
+  boards: BoardPreview;
 }
 
 export const BOARD_PREVIEWS_SUBSCRIPTION = gql`
-  subscription {
-    board {
+  subscription boardSub($authToken: String!) {
+    boardSub(authToken: $authToken) {
       id
       title
       backgroundColor
@@ -23,3 +24,11 @@ export const BOARD_PREVIEWS_SUBSCRIPTION = gql`
     }
   }
 `;
+
+// const useBoardPreviewsSub = useSubscription<BoardPreview, BoardPreviewSubVariables>(
+//   BOARD_PREVIEWS_SUBSCRIPTION,
+//   {
+
+//   },
+
+// )

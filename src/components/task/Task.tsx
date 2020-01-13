@@ -1,7 +1,6 @@
 import React from "react";
 import {
   Typography,
-  makeStyles,
   ExpansionPanel,
   ExpansionPanelSummary,
   ExpansionPanelDetails
@@ -16,17 +15,7 @@ interface ITaskProps {
   onExpand: (event: React.ChangeEvent<{}>, isExpanded: boolean) => void;
 }
 
-const getStyles = () => {
-  return makeStyles({
-    task: {
-      padding: "5px"
-    }
-  });
-};
-
 const Task = ({ title, description, id, isExpanded, onExpand }: ITaskProps) => {
-  const styles = getStyles()();
-
   return (
     <ExpansionPanel expanded={isExpanded} onChange={onExpand}>
       <ExpansionPanelSummary
