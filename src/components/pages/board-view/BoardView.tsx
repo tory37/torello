@@ -8,6 +8,7 @@ import {
 import { useParams } from "react-router-dom";
 import Column from "components/column/Column";
 import ColumnCreate from "components/column-create/ColumnCreate";
+import { columnSort } from "utils/column";
 
 type TParams = { id: string };
 
@@ -31,16 +32,7 @@ const BoardView = () => {
   const { loading: isLoading, data } = useGetBoardQuery(
     id,
     (data: GetBoardQueryResult) => {
-      if (data && data.board)
-        setColumns(
-          data.board.columns.sort((col1, col2) => {
-            return col1.position < col2.position
-              ? -1
-              : col1.position > col2.position
-              ? 1
-              : 0;
-          })
-        );
+      if (data && data.board) setColumns(columnSort(data.board.columns));
     }
   );
 
@@ -76,19 +68,10 @@ const BoardView = () => {
       const newColumns = columns.slice(0);
 
       if (columns) {
-        const dragColumnIndex = newColumns.findIndex(
-          col => (col.position = dragIndex)
-        );
-        const hoverColumnIndex = newColumns.findIndex(
-          col => (col.position = hoverIndex)
-        );
+        newColumns[dragIndex].position = hoverIndex;
+        newColumns[hoverIndex].position = dragIndex;
 
-        if (dragColumnIndex > -1 && hoverColumnIndex > -1) {
-          newColumns[dragColumnIndex].position = hoverIndex;
-          newColumns[hoverColumnIndex].position = dragIndex;
-        }
-
-        setColumns(newColumns);
+        setColumns(columnSort(newColumns));
       }
     },
     [columns]
@@ -100,13 +83,13 @@ const BoardView = () => {
 
       {!isLoading && data && data.board && columns && (
         <Grid className={styles.columns} container spacing={4}>
-          {columns.map(column => (
+          {columns.map((column, index) => (
             <Grid item key={column.id}>
               <Column
                 id={column.id}
                 boardId={data.board.id}
                 title={column.title}
-                position={column.position}
+                index={index}
                 tasks={column.tasks}
                 moveColumn={moveColumn}
               />

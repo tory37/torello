@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Grid, Card, Typography, makeStyles } from "@material-ui/core";
 import TaskCreate from "components/task-create";
 import Task from "components/task";
@@ -9,7 +9,7 @@ interface IColumnProps {
   id: string;
   boardId: string;
   title: string;
-  position: number;
+  index: number;
   tasks: {
     id: string;
     title: string;
@@ -25,14 +25,15 @@ interface DragItem {
   type: string;
 }
 
-const getStyles = () => {
+const getStyles = (isDragging: boolean) => {
   return makeStyles({
     column: {
       width: "250px",
       maxHeight: "calc(100vh - 50px)",
       padding: "5px",
       backgroundColor: "#ebecf0",
-      overflowY: "auto"
+      overflowY: "auto",
+      opacity: isDragging ? 0 : 1
     }
   });
 };
@@ -41,12 +42,10 @@ const Column = ({
   id,
   boardId,
   title,
-  position,
+  index,
   tasks,
   moveColumn
 }: IColumnProps) => {
-  const styles = getStyles()();
-
   const [expanded, setExpanded] = useState<string | false>(false);
 
   const handleTaskExpansion = (taskId: string) => (
@@ -64,7 +63,7 @@ const Column = ({
         return;
       }
       const dragIndex = item.index;
-      const hoverIndex = position;
+      const hoverIndex = index;
 
       if (dragIndex === hoverIndex) {
         return;
@@ -109,13 +108,13 @@ const Column = ({
   });
 
   const [{ isDragging }, drag] = useDrag({
-    item: { type: ItemTypes.COLUMN, id, position },
+    item: { type: ItemTypes.COLUMN, id, index },
     collect: (monitor: any) => ({
       isDragging: monitor.isDragging()
     })
   });
 
-  const opacity = isDragging ? 0 : 1;
+  let styles = getStyles(isDragging)();
 
   drag(drop(ref));
 
