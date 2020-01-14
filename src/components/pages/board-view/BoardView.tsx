@@ -1,7 +1,10 @@
-import React from "react";
-
+import React, { useCallback, useState } from "react";
 import { Container, Grid, makeStyles } from "@material-ui/core";
-import { useGetBoardQuery } from "graphql/queries/getBoard";
+import {
+  useGetBoardQuery,
+  GetBoardQueryColumn,
+  GetBoardQueryResult
+} from "graphql/queries/getBoard";
 import { useParams } from "react-router-dom";
 import Column from "components/column/Column";
 import ColumnCreate from "components/column-create/ColumnCreate";
@@ -24,7 +27,22 @@ const getStyles = (backgroundColor: string) => {
 
 const BoardView = () => {
   const { id } = useParams<TParams>();
-  const { loading: isLoading, data } = useGetBoardQuery(id);
+  const [columns, setColumns] = useState<GetBoardQueryColumn[]>([]);
+  const { loading: isLoading, data } = useGetBoardQuery(
+    id,
+    (data: GetBoardQueryResult) => {
+      if (data && data.board)
+        setColumns(
+          data.board.columns.sort((col1, col2) => {
+            return col1.position < col2.position
+              ? -1
+              : col1.position > col2.position
+              ? 1
+              : 0;
+          })
+        );
+    }
+  );
 
   let styles = getStyles(data?.board.backgroundColor || "white")();
 
@@ -52,13 +70,37 @@ const BoardView = () => {
   //   return () => unsubscribe();
   // }, [subscribeToMore]);
 
+  const moveColumn = useCallback(
+    (dragIndex: number, hoverIndex: number) => {
+      console.log(`Indices: drag -> ${dragIndex}, hover -> ${hoverIndex}`);
+      const newColumns = columns.slice(0);
+
+      if (columns) {
+        const dragColumnIndex = newColumns.findIndex(
+          col => (col.position = dragIndex)
+        );
+        const hoverColumnIndex = newColumns.findIndex(
+          col => (col.position = hoverIndex)
+        );
+
+        if (dragColumnIndex > -1 && hoverColumnIndex > -1) {
+          newColumns[dragColumnIndex].position = hoverIndex;
+          newColumns[hoverColumnIndex].position = dragIndex;
+        }
+
+        setColumns(newColumns);
+      }
+    },
+    [columns]
+  );
+
   return (
     <Container className={styles.container}>
       {isLoading && <span>Loading...</span>}
 
-      {!isLoading && data && data.board && data.board.columns && (
+      {!isLoading && data && data.board && columns && (
         <Grid className={styles.columns} container spacing={4}>
-          {data.board.columns.map(column => (
+          {columns.map(column => (
             <Grid item key={column.id}>
               <Column
                 id={column.id}
@@ -66,6 +108,7 @@ const BoardView = () => {
                 title={column.title}
                 position={column.position}
                 tasks={column.tasks}
+                moveColumn={moveColumn}
               />
             </Grid>
           ))}

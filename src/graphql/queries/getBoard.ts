@@ -5,22 +5,26 @@ export interface GetBoardQueryVariables {
   id: string;
 }
 
+export interface GetBoardQueryColumn {
+  id: string;
+  title: string;
+  position: number;
+  tasks: GetBoardQueryTask[];
+}
+
+export interface GetBoardQueryTask {
+  id: string;
+  title: string;
+  description: string;
+  position: number;
+}
+
 export interface GetBoardQueryResult {
   board: {
     id: string;
     title: string;
     backgroundColor: string;
-    columns: {
-      id: string;
-      title: string;
-      position: number;
-      tasks: {
-        id: string;
-        title: string;
-        description: string;
-        position: number;
-      }[];
-    }[];
+    columns: GetBoardQueryColumn[];
   };
 }
 
@@ -45,9 +49,15 @@ const GET_BOARD_QUERY = gql`
   }
 `;
 
-export const useGetBoardQuery = (id: string) =>
+export const useGetBoardQuery = (
+  id: string,
+  onCompleted: (data: GetBoardQueryResult) => void
+) =>
   useQuery<GetBoardQueryResult, GetBoardQueryVariables>(GET_BOARD_QUERY, {
     variables: {
       id
+    },
+    onCompleted(data) {
+      onCompleted(data);
     }
   });

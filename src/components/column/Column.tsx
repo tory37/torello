@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Grid, Card, Typography, makeStyles } from "@material-ui/core";
 import TaskCreate from "components/task-create";
 import Task from "components/task";
+import { useDrop, DropTargetMonitor, useDrag, XYCoord } from "react-dnd";
+import ItemTypes from "dnd/ItemTypes";
 
 interface IColumnProps {
   id: string;
@@ -14,6 +16,13 @@ interface IColumnProps {
     description: string;
     position: number;
   }[];
+  moveColumn: (dragIndex: number, hoverIndex: number) => void;
+}
+
+interface DragItem {
+  index: number;
+  id: string;
+  type: string;
 }
 
 const getStyles = () => {
@@ -28,7 +37,14 @@ const getStyles = () => {
   });
 };
 
-const Column = ({ id, boardId, title, tasks }: IColumnProps) => {
+const Column = ({
+  id,
+  boardId,
+  title,
+  position,
+  tasks,
+  moveColumn
+}: IColumnProps) => {
   const styles = getStyles()();
 
   const [expanded, setExpanded] = useState<string | false>(false);
@@ -40,8 +56,71 @@ const Column = ({ id, boardId, title, tasks }: IColumnProps) => {
     setExpanded(isExpanded ? taskId : false);
   };
 
+  const ref = useRef<HTMLDivElement>(null);
+  const [, drop] = useDrop({
+    accept: ItemTypes.COLUMN,
+    hover(item: DragItem, monitor: DropTargetMonitor) {
+      if (!ref.current) {
+        return;
+      }
+      const dragIndex = item.index;
+      const hoverIndex = position;
+
+      if (dragIndex === hoverIndex) {
+        return;
+      }
+
+      // Determine rectangle on screen
+      const hoverBoundingRect = ref.current!.getBoundingClientRect();
+
+      // Get vertical middle
+      const hoverMiddleY =
+        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+
+      // Determine mouse position
+      const clientOffset = monitor.getClientOffset();
+
+      // Get pixels to the top
+      const hoverClientY = (clientOffset as XYCoord).y - hoverBoundingRect.top;
+
+      // Only perform the move when the mouse has crossed half of the items height
+      // When dragging downwards, only move when the cursor is below 50%
+      // When dragging upwards, only move when the cursor is above 50%
+
+      // Dragging downwards
+      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+        return;
+      }
+
+      // Dragging upwards
+      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+        return;
+      }
+
+      // Time to actually perform the action
+      moveColumn(dragIndex, hoverIndex);
+
+      // Note: we're mutating the monitor item here!
+      // Generally it's better to avoid mutations,
+      // but it's good here for the sake of performance
+      // to avoid expensive index searches.
+      item.index = hoverIndex;
+    }
+  });
+
+  const [{ isDragging }, drag] = useDrag({
+    item: { type: ItemTypes.COLUMN, id, position },
+    collect: (monitor: any) => ({
+      isDragging: monitor.isDragging()
+    })
+  });
+
+  const opacity = isDragging ? 0 : 1;
+
+  drag(drop(ref));
+
   return (
-    <Card className={styles.column}>
+    <Card className={styles.column} ref={ref}>
       <Grid container direction="column" spacing={1}>
         <Grid item>
           <Typography variant="subtitle2">{title}</Typography>
